@@ -37,6 +37,8 @@ yarn-error.log*
 .env*
 .env.local
 server/src/main/resources/firebase-service-account.json
+server/src/main/resources/*.properties
+
 *.pem
 
 # ========================
