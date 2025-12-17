@@ -10,6 +10,8 @@ public class User {
     private String name;
     private String email;
 private String avatarUrl;
+  private boolean journalLockEnabled = false;
+    private String journalPasscodeHash;
 
     public User() {}
 
@@ -31,4 +33,20 @@ private String avatarUrl;
 
     public String getAvatarUrl() { return avatarUrl; }
 public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
+public boolean isJournalLockEnabled() {
+        return journalLockEnabled;
+    }
+
+    public void setJournalLockEnabled(boolean journalLockEnabled) {
+        this.journalLockEnabled = journalLockEnabled;
+    }
+
+    public String getJournalPasscodeHash() {
+        return journalPasscodeHash;
+    }
+
+    public void setJournalPasscodeHash(String journalPasscodeHash) {
+        this.journalPasscodeHash = journalPasscodeHash;
+    }
 }

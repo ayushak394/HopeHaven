@@ -82,6 +82,9 @@ export default function InsightsPage() {
       }
     }
 
+    console.log("DECRYPTED JOURNALS:", decryptedJournals)
+
+
     // 3) Call backend to generate insights (backend will fetch moods itself)
     const aiResp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/insights/generate`,
@@ -109,6 +112,9 @@ export default function InsightsPage() {
       text = typeof aiResp.data === "string" ? aiResp.data : JSON.stringify(aiResp.data)
     }
 
+    console.log("FINAL INSIGHTS TEXT:", text)
+
+
     setInsights(text)
     setError(null)
   } catch (err) {
@@ -117,6 +123,7 @@ export default function InsightsPage() {
     setInsights("")
   }
 }
+
 
   const parseInsights = (text: string) => {
     text = text.replace(/\*\*/g, "")

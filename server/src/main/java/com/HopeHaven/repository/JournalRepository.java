@@ -11,6 +11,7 @@ import java.util.List;
 public interface JournalRepository extends JpaRepository<JournalEntry, Long> {
 
     List<JournalEntry> findByUserIdOrderByCreatedAtDesc(String userId);
+    List<JournalEntry> findByUserIdAndCipherTextIsNotNullOrderByCreatedAtDesc(String userId);
 
     @Query("SELECT j FROM JournalEntry j WHERE j.userId = :userId AND j.createdAt >= :fromDate ORDER BY j.createdAt DESC")
     List<JournalEntry> findLast7Days(

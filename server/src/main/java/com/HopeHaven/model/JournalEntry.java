@@ -15,10 +15,10 @@ public class JournalEntry {
 
     private String userId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT", nullable = true)
     private String content;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
 private String cipherText;   // base64 AES-GCM ciphertext
 
 @Column(length = 64)
@@ -43,5 +43,9 @@ public void setCipherText(String cipherText) { this.cipherText = cipherText; }
 
 public String getIv() { return iv; }
 public void setIv(String iv) { this.iv = iv; }
+
+public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+}
 
 }
