@@ -181,7 +181,7 @@ export default function MoodTrackerPage() {
       days.push(
         <div
           key={day}
-          className={`aspect-square p-2 rounded-xl border transition-all duration-300 ${
+          className={`aspect-square p-1 rounded-lg border transition-all duration-300 ${
             isToday
               ? "border-coral-500 bg-gradient-to-br from-coral-100 to-orange-100 shadow-lg"
               : isFuture
@@ -199,7 +199,7 @@ export default function MoodTrackerPage() {
                     return (
                       <span
                         key={idx}
-                        className="text-xl hover:scale-125 transition-transform cursor-pointer"
+                        className="text-4xl hover:scale-125 transition-transform cursor-pointer"
                         title={`${entry.mood} - ${new Date(entry.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`}
                       >
                         {moodData?.emoji}
@@ -541,7 +541,7 @@ export default function MoodTrackerPage() {
             </Card>
           </div>
 
-          <div className="max-w-5xl mx-auto">{renderCalendar()}</div>
+          <div className="max-w-7xl mx-auto">{renderCalendar()}</div>
         </div>
       </section>
     </div>

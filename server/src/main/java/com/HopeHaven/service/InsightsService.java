@@ -1,61 +1,3 @@
-// package com.HopeHaven.service;
-
-// import com.HopeHaven.model.MoodEntry;
-// import com.HopeHaven.model.JournalEntry;
-// import com.HopeHaven.repository.MoodRepository;
-// import com.HopeHaven.repository.JournalRepository;
-
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-
-// import java.time.LocalDateTime;
-// import java.util.List;
-
-// @Service
-// public class InsightsService {
-
-//     @Autowired
-//     private MoodRepository moodRepo;
-
-//     @Autowired
-//     private JournalRepository journalRepo;
-
-//     @Autowired
-//     private GeminiService gemini;
-
-
-//     public String generateInsights(String userId) throws Exception {
-
-//         LocalDateTime fromDate = LocalDateTime.now().minusDays(7);
-
-//         List<MoodEntry> moods = moodRepo.findLast7Days(userId, fromDate);
-//         List<JournalEntry> journals = journalRepo.findLast7Days(userId, fromDate);
-
-//         String prompt = buildPrompt(moods, journals);
-
-//         return gemini.generateInsight(prompt);
-//     }
-
-//     private String buildPrompt(List<MoodEntry> moods, List<JournalEntry> journals) {
-
-//         return """
-//         Analyze the following mood logs and journal entries for the user.
-
-//         Provide:
-//         1. A simple emotional summary of the past week.
-//         2. Patterns or trends you notice.
-//         3. Personalized wellness suggestions for next week.
-//         4. One positive motivational message.
-
-//         Mood Logs:
-//         %s
-
-//         Journal Entries:
-//         %s
-//         """.formatted(moods, journals);
-//     }
-// }
-
 package com.HopeHaven.service;
 
 import com.HopeHaven.dto.GenerateInsightsRequest;
@@ -102,21 +44,52 @@ public class InsightsService {
 
     private String buildPrompt(List<MoodEntry> moods, List<String> journals) {
 
-        return """
-        Analyze the following user data for emotional insights.
-
-        Provide:
-        1. Emotional summary for the week.
-        2. Patterns or behavioral trends.
-        3. Personalized wellness suggestions.
-        4. One short motivational message.
-
-        Mood Logs:
-        %s
-
-        Journal Entries (plaintext decrypted):
-        %s
-        """
-                .formatted(moods.toString(), journals.toString());
+    String moodText;
+    if (moods == null || moods.isEmpty()) {
+        moodText = "No mood logs available.";
+    } else {
+        moodText = moods.stream()
+                .limit(10)
+                .map(m ->
+                        m.getMood() + " on " + m.getTimestamp().toLocalDate()
+                )
+                .reduce("", (a, b) -> a + "- " + b + "\n");
     }
+
+    String journalText;
+    if (journals == null || journals.isEmpty()) {
+        journalText = "No journal entries available.";
+    } else {
+        journalText = journals.stream()
+                .limit(3)
+                .map(j -> j.length() > 250 ? j.substring(0, 250) + "..." : j)
+                .reduce("", (a, b) -> a + "- " + b + "\n");
+    }
+
+    return """
+    You are an emotional wellness assistant.
+
+    Using the data below, generate concise, empathetic insights.
+    Avoid disclaimers like "insufficient data" unless absolutely necessary.
+    Do NOT repeat the raw data back to the user.
+
+    Respond in EXACTLY four sections, clearly labeled:
+
+    1. Emotional Summary (3–4 sentences max)
+    2. Patterns & Trends (bullet points, max 3)
+    3. Wellness Suggestions (bullet points, max 3)
+    4. One Short Motivational Message (1 sentence)
+
+    Keep the tone warm, supportive, and human.
+    Be insightful, not verbose.
+
+    Mood Logs:
+    %s
+
+    Journal Excerpts:
+    %s
+    """
+    .formatted(moodText, journalText);
+}
+
 }
