@@ -19,10 +19,10 @@ public class JournalEntry {
     private String content;
 
     @Column(columnDefinition = "LONGTEXT")
-private String cipherText;   // base64 AES-GCM ciphertext
+private String cipherText;   
 
 @Column(length = 64)
-private String iv;           // base64 12-byte IV
+private String iv;           
 
    
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")

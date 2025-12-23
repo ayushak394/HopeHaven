@@ -19,7 +19,6 @@ public class GeminiService {
 
     public String generateInsight(String prompt) throws Exception {
 
-        // Escape quotes to avoid invalid JSON
         String safePrompt = prompt.replace("\"", "\\\"");
 
         String json = """
@@ -47,14 +46,12 @@ public class GeminiService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();
 
-        // If error returned by Gemini
         if (body.contains("\"error\"")) {
             System.out.println("Gemini Error: " + body);
             return "AI service is temporarily unavailable. Please try again later.";
         }
         
 
-        // Try extracting text inside the response
         try {
             return extractText(body);
         } catch (Exception e) {

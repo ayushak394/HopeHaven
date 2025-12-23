@@ -11,8 +11,8 @@ public class MoodEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;   // Firebase UID
-    private String mood;     // happy, sad, etc.
+    private String userId;  
+    private String mood;     
     private LocalDateTime timestamp;
 
     public MoodEntry() {}

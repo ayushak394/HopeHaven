@@ -126,7 +126,7 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-coral-500/10 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-200" />
@@ -139,7 +139,7 @@ export default function HomePage() {
             <div className="relative">
               <Heart className="w-9 h-9 text-coral-500 relative animate-pulse-gentle" />
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-coral-600 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-linear-to-r from-coral-600 via-pink-500 to-purple-600 bg-clip-text text-transparent">
               HopeHaven
             </span>
           </div>
@@ -164,14 +164,14 @@ export default function HomePage() {
             className={`transition-all duration-1000 ${isVisible ? "animate-slide-up opacity-100" : "opacity-0 translate-y-8"}`}
           >
             <div className="mb-12 text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-coral-100 to-pink-100 border border-coral-200 mb-6 animate-fade-in">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-coral-100 to-pink-100 border border-coral-200 mb-6 animate-fade-in">
                 <Sparkles className="w-4 h-4 text-coral-600" />
                 <span className="text-sm font-medium text-coral-700">Your wellness dashboard</span>
               </div>
 
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight">
                 <span className="block text-slate-900 mb-2">Welcome back,</span>
-                <span className="bg-gradient-to-r from-coral-600 via-pink-600 to-purple-600 bg-clip-text text-transparent animate-fade-in animation-delay-200">
+                <span className="bg-linear-to-r from-coral-600 via-pink-600 to-purple-600 bg-clip-text text-transparent animate-fade-in animation-delay-200">
                   {userProfile?.name || "Friend"}
                 </span>
                 <span className="text-5xl">!</span>
@@ -183,12 +183,12 @@ export default function HomePage() {
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
                 <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 animate-fade-in animation-delay-100 group overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-br from-coral-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="p-6 text-center relative z-10">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-coral-500 to-pink-500 flex items-center justify-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-linear-to-br from-coral-500 to-pink-500 flex items-center justify-center">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-4xl font-bold bg-gradient-to-r from-coral-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                    <div className="text-4xl font-bold bg-linear-to-r from-coral-600 to-pink-600 bg-clip-text text-transparent mb-2">
                       {userProfile?.totalMoodEntries || 0}
                     </div>
                     <p className="text-sm font-medium text-slate-600">Mood Entries</p>
@@ -196,12 +196,12 @@ export default function HomePage() {
                 </Card>
 
                 <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 animate-fade-in animation-delay-200 group overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="p-6 text-center relative z-10">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
                       <Heart className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
+                    <div className="text-4xl font-bold bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
                       {userProfile?.streak || 0}
                     </div>
                     <p className="text-sm font-medium text-slate-600">Day Streak</p>
@@ -209,12 +209,12 @@ export default function HomePage() {
                 </Card>
 
                 <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 animate-fade-in animation-delay-300 group overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="p-6 text-center relative z-10">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                       <BookOpen className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                    <div className="text-4xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                       5
                     </div>
                     <p className="text-sm font-medium text-slate-600">Journal Posts</p>
@@ -222,12 +222,12 @@ export default function HomePage() {
                 </Card>
 
                 <Card className="border-0 bg-white/80 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 animate-fade-in animation-delay-400 group overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-br from-orange-500/10 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="p-6 text-center relative z-10">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center">
                       <BarChart3 className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">
+                    <div className="text-4xl font-bold bg-linear-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">
                       100%
                     </div>
                     <p className="text-sm font-medium text-slate-600">This Week</p>
@@ -242,7 +242,7 @@ export default function HomePage() {
       <section className="py-20 px-4 sm:px-6 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent">
               Your Wellness Tools
             </h2>
             <p className="text-xl sm:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
@@ -267,17 +267,17 @@ export default function HomePage() {
                   onClick={() => router.push(feature.href)}
                 >
                   <div
-                    className={`absolute inset-0 bg-gradient-to-br ${gradients[feature.color]}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                    className={`absolute inset-0 bg-linear-to-br ${gradients[feature.color]}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                   />
 
                   <CardContent className="p-8 sm:p-10 relative z-10">
                     <div className="flex items-start justify-between mb-6">
                       <div className="relative">
                         <div
-                          className={`absolute inset-0 bg-gradient-to-br ${gradients[feature.color]} rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500`}
+                          className={`absolute inset-0 bg-linear-to-br ${gradients[feature.color]} rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500`}
                         />
                         <div
-                          className={`relative bg-gradient-to-br ${gradients[feature.color]} rounded-2xl flex items-center justify-center p-5 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
+                          className={`relative bg-linear-to-br ${gradients[feature.color]} rounded-2xl flex items-center justify-center p-5 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
                         >
                           <IconComponent className="w-8 h-8 text-white" />
                         </div>
@@ -287,7 +287,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-coral-600 group-hover:to-purple-600 transition-all duration-300">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 group-hover:text-transparent group-hover:bg-linear-to-r group-hover:bg-clip-text group-hover:from-coral-600 group-hover:to-purple-600 transition-all duration-300">
                       {feature.title}
                     </h3>
                     <p className="text-slate-600 leading-relaxed text-lg">{feature.description}</p>
@@ -301,18 +301,18 @@ export default function HomePage() {
 
       <section className="py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
-          <Card className="border-0 bg-gradient-to-br from-coral-100 via-pink-100 to-purple-100 shadow-2xl overflow-hidden relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <Card className="border-0 bg-linear-to-br from-coral-100 via-pink-100 to-purple-100 shadow-2xl overflow-hidden relative group">
+            <div className="absolute inset-0 bg-linear-to-br from-coral-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <CardContent className="p-10 sm:p-16 text-center relative z-10">
               <div className="relative inline-block mb-8">
-                <div className="absolute inset-0 bg-gradient-to-r from-coral-500 to-purple-500 rounded-full blur-xl opacity-40 animate-pulse-gentle" />
-                <div className="relative w-20 h-20 bg-gradient-to-br from-coral-500 to-purple-500 rounded-full flex items-center justify-center mx-auto animate-float shadow-xl">
+                <div className="absolute inset-0 bg-linear-to-r from-coral-500 to-purple-500 rounded-full blur-xl opacity-40 animate-pulse-gentle" />
+                <div className="relative w-20 h-20 bg-linear-to-br from-coral-500 to-purple-500 rounded-full flex items-center justify-center mx-auto animate-float shadow-xl">
                   <Heart className="w-10 h-10 text-white" />
                 </div>
               </div>
 
-              <h3 className="text-3xl sm:text-4xl font-bold mb-6 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              <h3 className="text-3xl sm:text-4xl font-bold mb-6 bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                 You've Got This
               </h3>
               <p className="text-lg sm:text-xl text-slate-700 leading-relaxed max-w-2xl mx-auto">

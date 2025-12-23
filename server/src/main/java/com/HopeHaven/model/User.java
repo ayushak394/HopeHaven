@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "users")
 public class User {
     @Id
-    private String uid;  // Firebase UID
+    private String uid; 
     private String name;
     private String email;
 private String avatarUrl;

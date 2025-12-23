@@ -22,7 +22,6 @@ public class HomepageSummaryController {
     private final MoodRepository moodRepository;
     private final JournalRepository journalRepository;
 
-    // 🔥 Manual constructor because Lombok is not working
     public HomepageSummaryController(MoodRepository moodRepository, JournalRepository journalRepository) {
         this.moodRepository = moodRepository;
         this.journalRepository = journalRepository;

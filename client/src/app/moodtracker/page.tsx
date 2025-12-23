@@ -183,7 +183,7 @@ export default function MoodTrackerPage() {
           key={day}
           className={`aspect-square p-1 rounded-lg border transition-all duration-300 ${
             isToday
-              ? "border-coral-500 bg-gradient-to-br from-coral-100 to-orange-100 shadow-lg"
+              ? "border-coral-500 bg-linear-to-br from-coral-100 to-orange-100 shadow-lg"
               : isFuture
                 ? "border-gray-200 bg-gray-50 opacity-50"
                 : "border-gray-200 bg-white hover:border-coral-300 hover:shadow-lg hover:scale-105"
@@ -221,11 +221,11 @@ export default function MoodTrackerPage() {
 
     return (
       <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <CardHeader className="relative">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-400 to-blue-500 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl">Mood Calendar</span>
@@ -301,7 +301,7 @@ export default function MoodTrackerPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-coral-50/20 to-blue-50/20 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-background via-coral-50/20 to-blue-50/20 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-72 h-72 bg-coral-500/10 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-200" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl animate-pulse-gentle" />
@@ -317,7 +317,7 @@ export default function MoodTrackerPage() {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-coral-500 via-orange-500 to-blue-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-linear-to-r from-coral-500 via-orange-500 to-blue-500 bg-clip-text text-transparent">
               Mood Tracker
             </h1>
           </div>
@@ -332,9 +332,9 @@ export default function MoodTrackerPage() {
           >
             <div className="md:col-span-2">
               <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-coral-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-linear-to-br from-coral-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="relative">
-                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-coral-600 to-orange-600 bg-clip-text text-transparent">
+                  <CardTitle className="text-3xl font-bold bg-linear-to-r from-coral-600 to-orange-600 bg-clip-text text-transparent">
                     How are you feeling right now?
                   </CardTitle>
                   <p className="text-sm text-muted-foreground mt-2">Take a moment to check in with yourself</p>
@@ -342,7 +342,7 @@ export default function MoodTrackerPage() {
                 <CardContent className="relative">
                   {submitted ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-4 animate-fade-in">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-coral-400 to-orange-500 flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full bg-linear-to-br from-coral-400 to-orange-500 flex items-center justify-center">
                         <CheckCircle className="w-12 h-12 text-white animate-float" />
                       </div>
                       <p className="text-xl font-semibold text-foreground">Mood logged successfully!</p>
@@ -357,8 +357,8 @@ export default function MoodTrackerPage() {
                             onClick={() => setSelectedMood(mood.value)}
                             className={`p-6 rounded-2xl transition-all duration-300 transform hover:scale-110 ${
                               selectedMood === mood.value
-                                ? `bg-gradient-to-br ${mood.color === "bg-yellow-500" ? "from-yellow-400 to-orange-500" : mood.color === "bg-blue-500" ? "from-blue-400 to-cyan-500" : mood.color === "bg-purple-500" ? "from-purple-400 to-fuchsia-500" : mood.color === "bg-green-500" ? "from-green-400 to-teal-500" : mood.color === "bg-red-500" ? "from-red-400 to-pink-500" : "from-gray-400 to-slate-500"} text-white shadow-2xl scale-110`
-                                : "bg-white hover:bg-gradient-to-br hover:from-white hover:to-coral-50 text-foreground border-2 border-gray-200 hover:border-coral-300 shadow-md hover:shadow-xl"
+                                ? `bg-linear-to-br ${mood.color === "bg-yellow-500" ? "from-yellow-400 to-orange-500" : mood.color === "bg-blue-500" ? "from-blue-400 to-cyan-500" : mood.color === "bg-purple-500" ? "from-purple-400 to-fuchsia-500" : mood.color === "bg-green-500" ? "from-green-400 to-teal-500" : mood.color === "bg-red-500" ? "from-red-400 to-pink-500" : "from-gray-400 to-slate-500"} text-white shadow-2xl scale-110`
+                                : "bg-white hover:bg-linear-to-br hover:from-white hover:to-coral-50 text-foreground border-2 border-gray-200 hover:border-coral-300 shadow-md hover:shadow-xl"
                             } animate-fade-in`}
                             style={{ animationDelay: `${index * 100}ms` }}
                           >
@@ -372,7 +372,7 @@ export default function MoodTrackerPage() {
                         onClick={handleSubmitMood}
                         disabled={!selectedMood || submitting}
                         size="lg"
-                        className="w-full bg-gradient-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-white py-6 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl disabled:opacity-50"
+                        className="w-full bg-linear-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-white py-6 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl disabled:opacity-50"
                       >
                         {submitting ? (
                           <span className="flex items-center gap-2">
@@ -390,10 +390,10 @@ export default function MoodTrackerPage() {
             </div>
 
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center">
                     <Heart className="w-4 h-4 text-white fill-white" />
                   </div>
                   Recent Entries
@@ -407,7 +407,7 @@ export default function MoodTrackerPage() {
                       return (
                         <div
                           key={entry.id}
-                          className="flex items-center gap-3 p-4 bg-gradient-to-br from-white/90 to-coral-50/50 rounded-xl border border-coral-200/30 hover:border-coral-300 hover:shadow-lg transition-all duration-300 animate-fade-in hover:scale-[1.02] group/item"
+                          className="flex items-center gap-3 p-4 bg-linear-to-br from-white/90 to-coral-50/50 rounded-xl border border-coral-200/30 hover:border-coral-300 hover:shadow-lg transition-all duration-300 animate-fade-in hover:scale-[1.02] group/item"
                           style={{ animationDelay: `${index * 50}ms` }}
                         >
                           <span className="text-3xl group-hover/item:scale-125 transition-transform duration-300">
@@ -430,7 +430,7 @@ export default function MoodTrackerPage() {
                   </div>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-coral-100 to-pink-100 flex items-center justify-center mx-auto mb-3">
+                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-coral-100 to-pink-100 flex items-center justify-center mx-auto mb-3">
                       <Heart className="w-8 h-8 text-coral-500" />
                     </div>
                     <p className="font-medium text-sm">No mood entries yet</p>
@@ -443,10 +443,10 @@ export default function MoodTrackerPage() {
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-100 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-coral-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-coral-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-400 to-orange-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-coral-400 to-orange-500 flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Mood Distribution</span>
@@ -483,7 +483,7 @@ export default function MoodTrackerPage() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground gap-3">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-coral-100 to-orange-100 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-coral-100 to-orange-100 flex items-center justify-center">
                       <TrendingUp className="w-8 h-8 text-coral-500" />
                     </div>
                     <p className="font-medium">No data yet</p>
@@ -494,10 +494,10 @@ export default function MoodTrackerPage() {
             </Card>
 
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-200 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
                     <Activity className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Recent Activity</span>
@@ -530,7 +530,7 @@ export default function MoodTrackerPage() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground gap-3">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
                       <Activity className="w-8 h-8 text-blue-500" />
                     </div>
                     <p className="font-medium">No activity yet</p>

@@ -174,7 +174,7 @@ export default function DashboardPage() {
   const MOOD_COLORS = ["#FFB703", "#4ADE80", "#94A3B8", "#60A5FA", "#C084FC"]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-coral-50/20 to-blue-50/20 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-background via-coral-50/20 to-blue-50/20 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-72 h-72 bg-coral-500/10 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-200" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl animate-pulse-gentle" />
@@ -191,7 +191,7 @@ export default function DashboardPage() {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-coral-500 via-orange-500 to-blue-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-linear-to-r from-coral-500 via-orange-500 to-blue-500 bg-clip-text text-transparent">
               Wellness Dashboard
             </h1>
           </div>
@@ -206,11 +206,11 @@ export default function DashboardPage() {
           <div className={`transition-all duration-1000 ${isVisible ? "animate-slide-up opacity-100" : "opacity-0"}`}>
             <div className="grid md:grid-cols-4 gap-6 mb-8">
               {/* Average Mood Card */}
-              <Card className="border-0 bg-gradient-to-br from-yellow-100/80 via-orange-100/80 to-coral-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in group">
+              <Card className="border-0 bg-linear-to-br from-yellow-100/80 via-orange-100/80 to-coral-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-orange-700/80">Average Mood</p>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
                       <Target className="w-5 h-5 text-white" />
                     </div>
                   </div>
@@ -227,11 +227,11 @@ export default function DashboardPage() {
               </Card>
 
               {/* Total Mood Entries Card */}
-              <Card className="border-0 bg-gradient-to-br from-coral-100/80 via-pink-100/80 to-rose-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-100 group">
+              <Card className="border-0 bg-linear-to-br from-coral-100/80 via-pink-100/80 to-rose-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-100 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-coral-700/80">Mood Logs</p>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-coral-400 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Heart className="w-5 h-5 text-white fill-white animate-pulse-gentle" />
                     </div>
                   </div>
@@ -241,11 +241,11 @@ export default function DashboardPage() {
               </Card>
 
               {/* Journal Entries Card */}
-              <Card className="border-0 bg-gradient-to-br from-blue-100/80 via-cyan-100/80 to-sky-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-200 group">
+              <Card className="border-0 bg-linear-to-br from-blue-100/80 via-cyan-100/80 to-sky-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-200 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-blue-700/80">Journal Entries</p>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
                       <BookOpen className="w-5 h-5 text-white" />
                     </div>
                   </div>
@@ -255,11 +255,11 @@ export default function DashboardPage() {
               </Card>
 
               {/* Sentiment Score Card */}
-              <Card className="border-0 bg-gradient-to-br from-purple-100/80 via-violet-100/80 to-fuchsia-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-300 group">
+              <Card className="border-0 bg-linear-to-br from-purple-100/80 via-violet-100/80 to-fuchsia-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-300 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-semibold text-purple-700/80">Sentiment</p>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Brain className="w-5 h-5 text-white" />
                     </div>
                   </div>
@@ -277,10 +277,10 @@ export default function DashboardPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {/* Mood Trend Chart */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-100 overflow-hidden group lg:col-span-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-coral-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-coral-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-400 to-orange-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-coral-400 to-orange-500 flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Mood Trend</span>
@@ -324,10 +324,10 @@ export default function DashboardPage() {
 
             {/* Activity Distribution */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-200 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
                     <Calendar className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Activity Balance</span>
@@ -365,7 +365,7 @@ export default function DashboardPage() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground gap-3">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-coral-100 to-blue-100 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-coral-100 to-blue-100 flex items-center justify-center mx-auto mb-4">
                       <Calendar className="w-8 h-8 text-coral-500" />
                     </div>
                     <p className="font-medium">Start tracking to see your activity distribution!</p>
@@ -376,10 +376,10 @@ export default function DashboardPage() {
 
             {/* Weekly Activity Bar Chart */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden group lg:col-span-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-green-400 to-emerald-500 flex items-center justify-center">
                     <BarChart3 className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Weekly Activity</span>
@@ -410,10 +410,10 @@ export default function DashboardPage() {
 
             {/* Mood Distribution Chart */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-400 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center">
                     <PieChartIcon className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Mood Types</span>
@@ -453,10 +453,10 @@ export default function DashboardPage() {
 
             {/* Emotional Balance Radar Chart */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-500 overflow-hidden group lg:col-span-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-400 to-violet-500 flex items-center justify-center">
                     <Target className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Emotional Balance</span>
@@ -492,10 +492,10 @@ export default function DashboardPage() {
 
             {/* Engagement Trend Area Chart */}
             <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-600 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl">Engagement</span>
@@ -540,10 +540,10 @@ export default function DashboardPage() {
 
           {/* Achievements Section */}
           <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden mb-8 group">
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-linear-to-br from-yellow-500/5 via-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardHeader className="relative">
               <CardTitle className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-coral-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-yellow-400 to-coral-500 flex items-center justify-center">
                   <Award className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl">Your Achievements</span>
@@ -556,7 +556,7 @@ export default function DashboardPage() {
                   {dashboardData.achievements.map((achievement, index) => (
                     <div
                       key={index}
-                      className="p-5 bg-gradient-to-br from-yellow-100/80 via-coral-100/80 to-pink-100/80 rounded-2xl border-2 border-coral-200/50 flex items-center gap-4 animate-fade-in hover:scale-105 hover:shadow-lg transition-all duration-300 group/item"
+                      className="p-5 bg-linear-to-br from-yellow-100/80 via-coral-100/80 to-pink-100/80 rounded-2xl border-2 border-coral-200/50 flex items-center gap-4 animate-fade-in hover:scale-105 hover:shadow-lg transition-all duration-300 group/item"
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
                       <div className="text-3xl group-hover/item:scale-125 transition-transform duration-300">🏆</div>
@@ -566,7 +566,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-coral-100 to-yellow-100 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 rounded-full bg-linear-to-br from-coral-100 to-yellow-100 flex items-center justify-center mx-auto mb-4">
                     <Award className="w-10 h-10 text-coral-500" />
                   </div>
                   <p className="font-medium text-lg">Keep tracking your mood and journaling to unlock achievements!</p>
@@ -576,11 +576,11 @@ export default function DashboardPage() {
           </Card>
 
           {/* Wellness Tips Section */}
-          <Card className="border-0 bg-gradient-to-br from-blue-100/80 via-cyan-100/80 to-teal-100/80 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-400 overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <Card className="border-0 bg-linear-to-br from-blue-100/80 via-cyan-100/80 to-teal-100/80 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-400 overflow-hidden group">
+            <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardHeader className="relative">
               <CardTitle className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-400 to-teal-500 flex items-center justify-center">
                   <Brain className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl">Wellness Insights</span>

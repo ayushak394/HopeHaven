@@ -19,10 +19,8 @@ public class InsightsService {
     @Autowired
     private GeminiService gemini;
 
-    // ⭐ Called by the controller — FINAL method
     public String generateFromClient(String userId, GenerateInsightsRequest req) throws Exception {
 
-        // Date range
         LocalDateTime from = req.getFromDate() != null
                 ? LocalDateTime.parse(req.getFromDate(), DateTimeFormatter.ISO_DATE_TIME)
                 : LocalDateTime.now().minusDays(7);
@@ -31,10 +29,8 @@ public class InsightsService {
                 ? LocalDateTime.parse(req.getToDate(), DateTimeFormatter.ISO_DATE_TIME)
                 : LocalDateTime.now();
 
-        // Get moods from DB for last 7 days
         List<MoodEntry> moods = moodRepo.findLast7Days(userId, from);
 
-        // Journals come in PLAINTEXT directly from the frontend now
         List<String> plaintextJournals = req.getJournals();
 
         String prompt = buildPrompt(moods, plaintextJournals);

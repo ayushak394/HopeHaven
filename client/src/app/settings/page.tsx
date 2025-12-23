@@ -333,7 +333,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
       <div className="absolute top-20 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-200" />
       <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-coral-500/5 rounded-full blur-3xl animate-pulse-gentle" />
@@ -351,14 +351,14 @@ export default function SettingsPage() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 via-coral-500 to-blue-500 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-purple-500 via-coral-500 to-blue-500 bg-clip-text text-transparent">
                 Settings
               </h1>
               <p className="text-sm text-muted-foreground mt-1">Manage your account and preferences</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-blue-500 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white animate-pulse" />
             </div>
           </div>
@@ -371,10 +371,10 @@ export default function SettingsPage() {
             <div className="grid lg:grid-cols-2 gap-8 mb-8">
               {/* Profile Card */}
               <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-linear-to-br from-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="border-b border-border/50 relative pb-6">
                   <CardTitle className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral-400 to-pink-500 flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-coral-400 to-pink-500 flex items-center justify-center shadow-lg">
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -387,7 +387,7 @@ export default function SettingsPage() {
                 <CardContent className="pt-8 relative">
                   <div className="flex flex-col items-center gap-6 mb-8">
                     <div className="relative group/avatar">
-                      <div className="w-32 h-32 rounded-full bg-gradient-to-br from-coral-400 via-pink-400 to-coral-600 flex items-center justify-center overflow-hidden border-4 border-white shadow-2xl group-hover/avatar:scale-105 transition-transform duration-300">
+                      <div className="w-32 h-32 rounded-full bg-linear-to-br from-coral-400 via-pink-400 to-coral-600 flex items-center justify-center overflow-hidden border-4 border-white shadow-2xl group-hover/avatar:scale-105 transition-transform duration-300">
                         {profileImage || userProfile?.profilePicture ? (
                           <img
                             src={profileImage || userProfile.profilePicture!}
@@ -398,7 +398,7 @@ export default function SettingsPage() {
                           <span className="text-6xl">👤</span>
                         )}
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-linear-to-br from-green-400 to-emerald-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
                         <Sparkles className="w-5 h-5 text-white" />
                       </div>
                     </div>
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                           <Button
                             onClick={handleSaveName}
                             disabled={isSavingName}
-                            className="bg-gradient-to-r from-coral-500 to-pink-500 hover:from-coral-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                            className="bg-linear-to-r from-coral-500 to-pink-500 hover:from-coral-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                           >
                             {isSavingName ? "Saving..." : "Save"}
                           </Button>
@@ -450,7 +450,7 @@ export default function SettingsPage() {
                           </Button>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-coral-50/80 to-pink-50/80 rounded-xl border-2 border-coral-100">
+                        <div className="flex items-center gap-3 p-4 bg-linear-to-r from-coral-50/80 to-pink-50/80 rounded-xl border-2 border-coral-100">
                           <span className="text-2xl font-bold text-foreground flex-1">{displayName}</span>
                           <Button
                             variant="outline"
@@ -464,7 +464,7 @@ export default function SettingsPage() {
                       )}
                     </div>
 
-                    <div className="p-4 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 rounded-xl border-2 border-blue-100">
+                    <div className="p-4 bg-linear-to-r from-blue-50/80 to-cyan-50/80 rounded-xl border-2 border-blue-100">
                       <label className="block text-xs font-semibold text-muted-foreground mb-2">Email Address</label>
                       <p className="text-sm font-medium text-foreground flex items-center gap-2">
                         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -477,10 +477,10 @@ export default function SettingsPage() {
 
               {/* Theme Preferences Card */}
               <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-100 overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="border-b border-border/50 relative pb-6">
                   <CardTitle className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-purple-400 to-blue-500 flex items-center justify-center shadow-lg">
                       <Palette className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -497,12 +497,12 @@ export default function SettingsPage() {
                         onClick={() => setTheme(t.id)}
                         className={`p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center gap-4 relative overflow-hidden group/theme ${
                           theme === t.id
-                            ? "border-coral-500 bg-gradient-to-br from-coral-50 to-pink-50 shadow-lg"
+                            ? "border-coral-500 bg-linear-to-br from-coral-50 to-pink-50 shadow-lg"
                             : "border-border hover:border-coral-300 bg-white/80 backdrop-blur-sm"
                         }`}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-purple-500/10 opacity-0 group-hover/theme:opacity-100 transition-opacity duration-300" />
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-linear-to-br from-coral-500/10 to-purple-500/10 opacity-0 group-hover/theme:opacity-100 transition-opacity duration-300" />
+                        <div className="w-14 h-14 rounded-xl bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                           <span className="text-3xl relative z-10 group-hover/theme:scale-110 transition-transform duration-300">
                             {t.icon}
                           </span>
@@ -531,10 +531,10 @@ export default function SettingsPage() {
 
             <div className="grid lg:grid-cols-2 gap-8 mb-8">
               <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-200 overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="border-b border-border/50 relative pb-6">
                   <CardTitle className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-lg">
                       <Lock className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -545,7 +545,7 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="pt-8 relative">
                   <div className="space-y-6">
-                    <div className="p-6 bg-gradient-to-br from-blue-50/80 to-cyan-50/80 rounded-2xl border-2 border-blue-200/50">
+                    <div className="p-6 bg-linear-to-br from-blue-50/80 to-cyan-50/80 rounded-2xl border-2 border-blue-200/50">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <p className="font-semibold text-foreground">Journal Lock</p>
@@ -596,11 +596,11 @@ export default function SettingsPage() {
               </Card>
 
               {/* Account Actions Card */}
-              <Card className="border-0 bg-gradient-to-br from-orange-100/80 via-red-100/80 to-coral-100/80 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-200 overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <Card className="border-0 bg-linear-to-br from-orange-100/80 via-red-100/80 to-coral-100/80 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-200 overflow-hidden group">
+                <div className="absolute inset-0 bg-linear-to-br from-red-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="border-b border-red-200/50 relative pb-6">
                   <CardTitle className="flex items-center gap-3 text-red-800">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-red-400 to-orange-500 flex items-center justify-center shadow-lg">
                       <Shield className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -617,7 +617,7 @@ export default function SettingsPage() {
                       </p>
                       <Button
                         onClick={handleSignOut}
-                        className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        className="w-full bg-linear-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -630,11 +630,11 @@ export default function SettingsPage() {
 
             <div className="grid lg:grid-cols-1 gap-8">
               {/* Danger Zone Card */}
-              <Card className="border-2 border-red-500 bg-gradient-to-br from-red-50/90 via-red-100/90 to-red-50/90 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <CardHeader className="border-b border-red-300/50 bg-gradient-to-r from-red-100/80 to-orange-100/80 relative pb-6">
+              <Card className="border-2 border-red-500 bg-linear-to-br from-red-50/90 via-red-100/90 to-red-50/90 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden group">
+                <div className="absolute inset-0 bg-linear-to-br from-red-600/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardHeader className="border-b border-red-300/50 bg-linear-to-r from-red-100/80 to-orange-100/80 relative pb-6">
                   <CardTitle className="flex items-center gap-3 text-red-800">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center animate-pulse-gentle shadow-lg">
+                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center animate-pulse-gentle shadow-lg">
                       <AlertTriangle className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -647,7 +647,7 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <div className="p-6 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-red-300/50 hover:border-red-400 transition-all duration-300 hover:shadow-lg">
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center shrink-0">
                           <Trash2 className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1">
@@ -673,7 +673,7 @@ export default function SettingsPage() {
                         <AlertDialogTrigger asChild>
                           <Button
                             variant="destructive"
-                            className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                            className="bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                           >
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete My Account
@@ -768,7 +768,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleEnableJournalLock}
               disabled={isProcessing}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+              className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
             >
               {isProcessing ? "Enabling..." : "Enable Lock"}
             </Button>
@@ -808,7 +808,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleDisableJournalLock}
               disabled={isProcessing}
-              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+              className="bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
             >
               {isProcessing ? "Disabling..." : "Disable Lock"}
             </Button>
@@ -859,7 +859,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleChangePasscode}
               disabled={isProcessing}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+              className="bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
             >
               {isProcessing ? "Changing..." : "Change Passcode"}
             </Button>

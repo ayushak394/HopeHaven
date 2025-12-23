@@ -43,42 +43,6 @@ export default function HopeHavenLanding() {
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut(auth);
-  };
-
-  // useEffect(() => {
-  //   setIsVisible(true)
-
-  //   const interval = setInterval(() => {
-  //     setCurrentMood((prev) => (prev + 1) % moods.length)
-  //   }, 2000)
-
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       setUser(user)
-  //       console.log("Signed in as:", user.email)
-  //       const token = await user.getIdToken()
-  //       try {
-  //         const res = await axios.get("http://localhost:8080/api/secure-data", {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         })
-  //         console.log(res.data)
-  //       } catch (err) {
-  //         console.error("Error calling backend:", err)
-  //       }
-  //     } else {
-  //       setUser(null)
-  //       console.log("No user signed in")
-  //     }
-  //   })
-
-  //   return () => {
-  //     clearInterval(interval)
-  //     unsubscribe()
-  //   }
-  // }, [])
-
   useEffect(() => {
     setIsVisible(true);
     const interval = setInterval(() => {
@@ -135,7 +99,7 @@ export default function HopeHavenLanding() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-coral-50 to-blue-50 py-20 px-4">
+      <section className="relative overflow-hidden bg-linear-to-br from-coral-50 to-blue-50 py-20 px-4">
         <div className="relative max-w-6xl mx-auto text-center">
           <div
             className={`transition-all duration-1000 ${
@@ -151,7 +115,7 @@ export default function HopeHavenLanding() {
 
             <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
               Welcome to{" "}
-              <span className="bg-gradient-to-r from-coral-600 to-coral-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-coral-600 to-coral-400 bg-clip-text text-transparent">
                 HopeHaven
               </span>
             </h1>
@@ -196,7 +160,7 @@ export default function HopeHavenLanding() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-gradient-to-br from-coral-50 to-coral-100/50 animate-fade-in">
+            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-linear-to-br from-coral-50 to-coral-100/50 animate-fade-in">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-coral-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 animate-pulse-gentle">
                   <TrendingUp className="w-8 h-8 text-white" />
@@ -221,7 +185,7 @@ export default function HopeHavenLanding() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-gradient-to-br from-blue-50 to-blue-100/50 animate-fade-in animation-delay-200">
+            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-linear-to-br from-blue-50 to-blue-100/50 animate-fade-in animation-delay-200">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 animate-float">
                   <BookOpen className="w-8 h-8 text-white" />
@@ -241,7 +205,7 @@ export default function HopeHavenLanding() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-gradient-to-br from-purple-50 to-purple-100/50 animate-fade-in animation-delay-400">
+            <Card className="group hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border-0 bg-linear-to-br from-purple-50 to-purple-100/50 animate-fade-in animation-delay-400">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 animate-pulse-gentle">
                   <Sparkles className="w-8 h-8 text-white" />
@@ -265,7 +229,7 @@ export default function HopeHavenLanding() {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-gradient-to-r from-coral-50/50 to-blue-50/50">
+      <section className="py-20 px-4 bg-linear-to-r from-coral-50/50 to-blue-50/50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Simple Steps to Better Wellbeing
@@ -331,7 +295,7 @@ export default function HopeHavenLanding() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-coral-50 to-coral-100/50 animate-fade-in">
+            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-linear-to-br from-coral-50 to-coral-100/50 animate-fade-in">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-coral-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-white text-xl">📈</span>
@@ -346,7 +310,7 @@ export default function HopeHavenLanding() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-blue-50 to-blue-100/50 animate-fade-in animation-delay-100">
+            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-linear-to-br from-blue-50 to-blue-100/50 animate-fade-in animation-delay-100">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-white text-xl">🧘</span>
@@ -361,7 +325,7 @@ export default function HopeHavenLanding() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-purple-50 to-purple-100/50 animate-fade-in animation-delay-200">
+            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-linear-to-br from-purple-50 to-purple-100/50 animate-fade-in animation-delay-200">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-white text-xl">💡</span>
@@ -376,7 +340,7 @@ export default function HopeHavenLanding() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-gradient-to-br from-orange-50 to-orange-100/50 animate-fade-in animation-delay-300">
+            <Card className="group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 border-0 bg-linear-to-br from-orange-50 to-orange-100/50 animate-fade-in animation-delay-300">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <span className="text-white text-xl">🌱</span>
@@ -394,7 +358,7 @@ export default function HopeHavenLanding() {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50/30">
+      <section className="py-20 px-4 bg-linear-to-br from-slate-50 to-blue-50/30">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -411,7 +375,7 @@ export default function HopeHavenLanding() {
             <div className="animate-fade-in">
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-coral-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse-gentle">
+                  <div className="w-8 h-8 bg-coral-500 rounded-full flex items-center justify-center shrink-0 animate-pulse-gentle">
                     <Heart className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -426,7 +390,7 @@ export default function HopeHavenLanding() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse-gentle">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0 animate-pulse-gentle">
                     <Brain className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -441,7 +405,7 @@ export default function HopeHavenLanding() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse-gentle">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center shrink-0 animate-pulse-gentle">
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -458,10 +422,10 @@ export default function HopeHavenLanding() {
             </div>
 
             <div className="animate-fade-in animation-delay-200">
-              <Card className="border-0 bg-gradient-to-br from-coral-100 to-blue-100 p-8">
+              <Card className="border-0 bg-linear-to-br from-coral-100 to-blue-100 p-8">
                 <CardContent className="p-0">
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-coral-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
+                    <div className="w-16 h-16 bg-linear-to-r from-coral-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
                       <Heart className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-foreground mb-4">
@@ -481,7 +445,7 @@ export default function HopeHavenLanding() {
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-gradient-to-br from-coral-600 to-coral-500 text-white">
+      <section className="py-20 px-4 bg-linear-to-br from-coral-600 to-coral-500 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <div className="animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
