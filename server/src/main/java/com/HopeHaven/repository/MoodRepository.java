@@ -17,4 +17,13 @@ public interface MoodRepository extends JpaRepository<MoodEntry, Long> {
             @Param("userId") String userId,
             @Param("fromDate") LocalDateTime fromDate
     );
+
+@Query("""
+SELECT m.mood, m.timestamp
+FROM MoodEntry m
+WHERE m.userId = :userId
+ORDER BY m.timestamp ASC
+""")
+List<Object[]> findMoodTimeline(@Param("userId") String userId);
+  
 }

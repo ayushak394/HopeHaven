@@ -1,6 +1,8 @@
 package com.HopeHaven.controller;
 
 import java.time.LocalDateTime;
+import java.time.Instant;
+
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class JournalController {
         entry.setUserId(user.getUid());
         entry.setCipherText(dto.getCipherText());
         entry.setIv(dto.getIv());
-        entry.setCreatedAt(LocalDateTime.now());
+        entry.setCreatedAt(Instant.now());
 
         return journalRepository.save(entry);
     }
@@ -42,18 +44,18 @@ public class JournalController {
     public List<EncryptedJournalView> getEncrypted(ServletRequest request) {
 
         FirebaseToken user = (FirebaseToken) request.getAttribute("firebaseUser");
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         return journalRepository
                 .findByUserIdAndCipherTextIsNotNullOrderByCreatedAtDesc(user.getUid())
                 .stream()
                 .map(e -> new EncryptedJournalView(
-                        e.getId(),
-                        e.getUserId(),
-                        e.getCipherText(),
-                        e.getIv(),
-                        e.getCreatedAt() != null ? fmt.format(e.getCreatedAt()) : null
-                ))
+        e.getId(),
+        e.getUserId(),
+        e.getCipherText(),
+        e.getIv(),
+        e.getCreatedAt()
+))
+
                 .collect(Collectors.toList());
     }
 

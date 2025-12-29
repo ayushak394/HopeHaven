@@ -3,6 +3,7 @@ package com.HopeHaven.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.Instant;
 
 
 
@@ -25,8 +26,8 @@ private String cipherText;
 private String iv;           
 
    
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false)
+private Instant createdAt = Instant.now();
 
 
     public Long getId() { return id; }
@@ -36,7 +37,7 @@ private String iv;
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Instant getCreatedAt() { return createdAt; }
 
     public String getCipherText() { return cipherText; }
 public void setCipherText(String cipherText) { this.cipherText = cipherText; }
@@ -44,7 +45,7 @@ public void setCipherText(String cipherText) { this.cipherText = cipherText; }
 public String getIv() { return iv; }
 public void setIv(String iv) { this.iv = iv; }
 
-public void setCreatedAt(LocalDateTime createdAt) {
+public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
 }
 

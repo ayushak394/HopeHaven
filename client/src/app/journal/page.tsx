@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BookOpen,
   ArrowLeft,
@@ -20,309 +20,330 @@ import {
   Clock,
   Upload,
   Lock,
-} from "lucide-react"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import axios from "axios"
-import { app } from "@/lib/firebase"
-import { useRouter } from "next/navigation"
-import { getOrCreateUserKey, encryptJSON, decryptJSON, imageToBase64 } from "@/lib/crypto"
+} from "lucide-react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
+import { app } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
+import {
+  getOrCreateUserKey,
+  encryptJSON,
+  decryptJSON,
+  imageToBase64,
+} from "@/lib/crypto";
 
 interface JournalEntry {
-  id: number
-  userId: string
-  cipherText: string
-  iv: string
-  createdAt: string
+  id: number;
+  userId: string;
+  cipherText: string;
+  iv: string;
+  createdAt: string;
   content?: {
-    text: string
-    images: string[]
-  }
+    text: string;
+    images: string[];
+  };
 }
 
 export default function JournalPage() {
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [entryContent, setEntryContent] = useState("")
-  const [selectedImages, setSelectedImages] = useState<string[]>([])
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([])
-  const [isVisible, setIsVisible] = useState(false)
-  const [deletingId, setDeletingId] = useState<number | null>(null)
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editContent, setEditContent] = useState("")
-  const [editImages, setEditImages] = useState<string[]>([])
-  const [updatingId, setUpdatingId] = useState<number | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const editFileInputRef = useRef<HTMLInputElement>(null)
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [entryContent, setEntryContent] = useState("");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [editImages, setEditImages] = useState<string[]>([]);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
-  const [isLocked, setIsLocked] = useState(false)
-  const [isUnlocked, setIsUnlocked] = useState(false)
-  const [passcode, setPasscode] = useState("")
-  const [passcodeError, setPasscodeError] = useState("")
-  const [verifying, setVerifying] = useState(false)
+  const [isLocked, setIsLocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [passcode, setPasscode] = useState("");
+  const [passcodeError, setPasscodeError] = useState("");
+  const [verifying, setVerifying] = useState(false);
 
-  const auth = getAuth(app)
-  const router = useRouter()
+  const auth = getAuth(app);
+  const router = useRouter();
 
   useEffect(() => {
-    setIsVisible(true)
+    setIsVisible(true);
 
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        setUser(authUser)
-        await checkJournalLock(authUser)
+        setUser(authUser);
+        await checkJournalLock(authUser);
       } else {
-        router.push("/")
+        router.push("/");
       }
-      setLoading(false)
-    })
+      setLoading(false);
+    });
 
-    return () => unsubscribe()
-  }, [auth, router])
+    return () => unsubscribe();
+  }, [auth, router]);
 
   const checkJournalLock = async (authUser: any) => {
     try {
-      const token = await authUser.getIdToken()
-      const response = await axios.get("http://localhost:8080/api/journal-lock/status", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const token = await authUser.getIdToken();
+      const response = await axios.get(
+        "http://localhost:8080/api/journal-lock/status",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (response.data.enabled) {
-        setIsLocked(true)
+        setIsLocked(true);
       } else {
-        setIsLocked(false)
-        setIsUnlocked(true)
-        await fetchJournalEntries(authUser)
+        setIsLocked(false);
+        setIsUnlocked(true);
+        await fetchJournalEntries(authUser);
       }
     } catch (error) {
-      console.error("Error checking journal lock status:", error)
+      console.error("Error checking journal lock status:", error);
       // If error, assume no lock and proceed
-      setIsLocked(false)
-      setIsUnlocked(true)
-      await fetchJournalEntries(authUser)
+      setIsLocked(false);
+      setIsUnlocked(true);
+      await fetchJournalEntries(authUser);
     }
-  }
+  };
 
   const handleVerifyPasscode = async () => {
-    if (!passcode.trim() || !user) return
+    if (!passcode.trim() || !user) return;
 
-    setVerifying(true)
-    setPasscodeError("")
+    setVerifying(true);
+    setPasscodeError("");
 
     try {
-      const token = await user.getIdToken()
+      const token = await user.getIdToken();
       const response = await axios.post(
         "http://localhost:8080/api/journal-lock/verify",
         { passcode },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       if (response.data.success) {
-        setIsUnlocked(true)
-        setIsLocked(false)
-        await fetchJournalEntries(user)
+        setIsUnlocked(true);
+        setIsLocked(false);
+        await fetchJournalEntries(user);
       } else {
-        setPasscodeError("Incorrect passcode. Please try again.")
+        setPasscodeError("Incorrect passcode. Please try again.");
       }
     } catch (error: any) {
       if (error.response?.status === 401) {
-        setPasscodeError("Incorrect passcode. Please try again.")
+        setPasscodeError("Incorrect passcode. Please try again.");
       } else {
-        setPasscodeError("An error occurred. Please try again.")
+        setPasscodeError("An error occurred. Please try again.");
       }
     } finally {
-      setVerifying(false)
-      setPasscode("")
+      setVerifying(false);
+      setPasscode("");
     }
-  }
+  };
 
   const fetchJournalEntries = async (authUser: any) => {
     try {
-      const token = await authUser.getIdToken()
-      const key = await getOrCreateUserKey(authUser.uid)
+      const token = await authUser.getIdToken();
+      const key = await getOrCreateUserKey(authUser.uid);
 
-      const response = await axios.get("http://localhost:8080/api/journal/all-encrypted", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await axios.get(
+        "http://localhost:8080/api/journal/all-encrypted",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      const entries: JournalEntry[] = response.data
+      const entries: JournalEntry[] = response.data;
 
       for (const e of entries) {
         try {
-          const decrypted = await decryptJSON(e.cipherText, e.iv, key)
+          const decrypted = await decryptJSON(e.cipherText, e.iv, key);
           // Handle both old format (string) and new format (object with text and images)
           if (typeof decrypted === "string") {
-            e.content = { text: decrypted, images: [] }
+            e.content = { text: decrypted, images: [] };
           } else {
-            e.content = decrypted
+            e.content = decrypted as any;
           }
         } catch {
-          e.content = { text: "[Decryption failed on this device]", images: [] }
+          e.content = {
+            text: "[Decryption failed on this device]",
+            images: [],
+          };
         }
       }
 
-      setJournalEntries(entries)
+      setJournalEntries(entries);
     } catch (error) {
-      console.error("Error fetching journal entries:", error)
+      console.error("Error fetching journal entries:", error);
     }
-  }
+  };
 
   const handleSaveEntry = async () => {
-    if (!entryContent.trim() || !user) return
+    if (!entryContent.trim() || !user) return;
 
-    setSubmitting(true)
+    setSubmitting(true);
     try {
-      const token = await user.getIdToken()
-      const key = await getOrCreateUserKey(user.uid)
+      const token = await user.getIdToken();
+      const key = await getOrCreateUserKey(user.uid);
 
       // Prepare data with text and images
       const journalData = {
         text: entryContent,
         images: selectedImages,
-      }
+      };
 
-      const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key)
+      const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key);
 
       await axios.post(
         "http://localhost:8080/api/journal/add-encrypted",
         { cipherText: cipherTextB64, iv: ivB64 },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      setSubmitted(true)
-      setEntryContent("")
-      setSelectedImages([])
+      setSubmitted(true);
+      setEntryContent("");
+      setSelectedImages([]);
 
       setTimeout(async () => {
-        await fetchJournalEntries(user)
-        setSubmitted(false)
-        setSubmitting(false)
-      }, 1200)
+        await fetchJournalEntries(user);
+        setSubmitted(false);
+        setSubmitting(false);
+      }, 1200);
     } catch (error) {
-      console.error("Error saving journal entry:", error)
-      setSubmitting(false)
+      console.error("Error saving journal entry:", error);
+      setSubmitting(false);
     }
-  }
+  };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
-
-    const imagePromises = Array.from(files).map(async (file) => {
-      if (file.type.startsWith("image/")) {
-        return await imageToBase64(file)
-      }
-      return null
-    })
-
-    const images = await Promise.all(imagePromises)
-    const validImages = images.filter((img): img is string => img !== null)
-    setSelectedImages((prev) => [...prev, ...validImages])
-  }
-
-  const handleEditImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
 
     const imagePromises = Array.from(files).map(async (file) => {
       if (file.type.startsWith("image/")) {
-        return await imageToBase64(file)
+        return await imageToBase64(file);
       }
-      return null
-    })
+      return null;
+    });
 
-    const images = await Promise.all(imagePromises)
-    const validImages = images.filter((img): img is string => img !== null)
-    setEditImages((prev) => [...prev, ...validImages])
-  }
+    const images = await Promise.all(imagePromises);
+    const validImages = images.filter((img): img is string => img !== null);
+    setSelectedImages((prev) => [...prev, ...validImages]);
+  };
+
+  const handleEditImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const imagePromises = Array.from(files).map(async (file) => {
+      if (file.type.startsWith("image/")) {
+        return await imageToBase64(file);
+      }
+      return null;
+    });
+
+    const images = await Promise.all(imagePromises);
+    const validImages = images.filter((img): img is string => img !== null);
+    setEditImages((prev) => [...prev, ...validImages]);
+  };
 
   const removeImage = (index: number) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index))
-  }
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const removeEditImage = (index: number) => {
-    setEditImages((prev) => prev.filter((_, i) => i !== index))
-  }
+    setEditImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleStartEdit = (entry: JournalEntry) => {
-    setEditingId(entry.id)
-    setEditContent(entry.content?.text || "")
-    setEditImages(entry.content?.images || [])
-  }
+    setEditingId(entry.id);
+    setEditContent(entry.content?.text || "");
+    setEditImages(entry.content?.images || []);
+  };
 
   const handleCancelEdit = () => {
-    setEditingId(null)
-    setEditContent("")
-    setEditImages([])
-  }
+    setEditingId(null);
+    setEditContent("");
+    setEditImages([]);
+  };
 
   const handleSaveEdit = async (entryId: number) => {
-    if (!editContent.trim() || !user) return
+    if (!editContent.trim() || !user) return;
 
-    setUpdatingId(entryId)
+    setUpdatingId(entryId);
     try {
-      const token = await user.getIdToken()
-      const key = await getOrCreateUserKey(user.uid)
+      const token = await user.getIdToken();
+      const key = await getOrCreateUserKey(user.uid);
 
       const journalData = {
         text: editContent,
         images: editImages,
-      }
+      };
 
-      const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key)
+      const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key);
 
       await axios.put(
         `http://localhost:8080/api/journal/update/${entryId}`,
         { cipherText: cipherTextB64, iv: ivB64 },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      setEditingId(null)
-      setEditContent("")
-      setEditImages([])
-      await fetchJournalEntries(user)
+      setEditingId(null);
+      setEditContent("");
+      setEditImages([]);
+      await fetchJournalEntries(user);
     } catch (error) {
-      console.error("Error updating journal entry:", error)
+      console.error("Error updating journal entry:", error);
     } finally {
-      setUpdatingId(null)
+      setUpdatingId(null);
     }
-  }
+  };
 
   const handleDeleteEntry = async (entryId: number) => {
-    if (!user) return
+    if (!user) return;
 
-    setDeletingId(entryId)
+    setDeletingId(entryId);
     try {
-      const token = await user.getIdToken()
+      const token = await user.getIdToken();
       await axios.delete(`http://localhost:8080/api/journal/${entryId}`, {
         headers: { Authorization: `Bearer ${token}` },
-      })
+      });
 
-      await fetchJournalEntries(user)
+      await fetchJournalEntries(user);
     } catch (error) {
-      console.error("Error deleting journal entry:", error)
+      console.error("Error deleting journal entry:", error);
     } finally {
-      setDeletingId(null)
+      setDeletingId(null);
     }
-  }
+  };
 
   const getTotalWords = () => {
     return journalEntries.reduce((total, entry) => {
-      return total + (entry.content?.text.split(/\s+/).length || 0)
-    }, 0)
-  }
+      return total + (entry.content?.text.split(/\s+/).length || 0);
+    }, 0);
+  };
 
   const getThisWeekCount = () => {
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-    return journalEntries.filter((entry) => new Date(entry.createdAt + "Z") > oneWeekAgo).length
-  }
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    return journalEntries.filter(
+      (entry) => new Date(entry.createdAt) > oneWeekAgo
+    ).length;
+  };
 
   const getAverageLength = () => {
-    if (journalEntries.length === 0) return 0
-    return Math.round(getTotalWords() / journalEntries.length)
-  }
+    if (journalEntries.length === 0) return 0;
+    return Math.round(getTotalWords() / journalEntries.length);
+  };
 
   if (loading) {
     return (
@@ -331,7 +352,7 @@ export default function JournalPage() {
           <BookOpen className="w-12 h-12 text-coral-500 animate-float" />
         </div>
       </div>
-    )
+    );
   }
 
   if (isLocked && !isUnlocked) {
@@ -359,7 +380,9 @@ export default function JournalPage() {
                   Journal Locked
                 </span>
               </CardTitle>
-              <p className="text-muted-foreground mt-2">Enter your passcode to access your private journal</p>
+              <p className="text-muted-foreground mt-2">
+                Enter your passcode to access your private journal
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
@@ -367,19 +390,23 @@ export default function JournalPage() {
                   type="password"
                   value={passcode}
                   onChange={(e) => {
-                    setPasscode(e.target.value)
-                    setPasscodeError("")
+                    setPasscode(e.target.value);
+                    setPasscodeError("");
                   }}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
-                      handleVerifyPasscode()
+                      handleVerifyPasscode();
                     }
                   }}
                   placeholder="Enter your passcode"
                   className="w-full p-4 rounded-xl bg-white border-2 border-gray-200 focus:border-coral-400 focus:ring-4 focus:ring-coral-100 focus:outline-none transition-all duration-300 text-lg text-center tracking-wider"
                   autoFocus
                 />
-                {passcodeError && <p className="text-red-500 text-sm text-center animate-shake">{passcodeError}</p>}
+                {passcodeError && (
+                  <p className="text-red-500 text-sm text-center animate-shake">
+                    {passcodeError}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -411,13 +438,14 @@ export default function JournalPage() {
               </div>
 
               <p className="text-xs text-center text-muted-foreground">
-                Forgot your passcode? You can disable the journal lock in Settings.
+                Forgot your passcode? You can disable the journal lock in
+                Settings.
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -442,12 +470,16 @@ export default function JournalPage() {
               <h1 className="text-3xl font-bold bg-linear-to-r from-coral-500 via-orange-500 to-purple-500 bg-clip-text text-transparent">
                 My Journal
               </h1>
-              <p className="text-xs text-muted-foreground">Express your thoughts and feelings</p>
+              <p className="text-xs text-muted-foreground">
+                Express your thoughts and feelings
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 bg-coral-100 rounded-full">
             <Sparkles className="w-4 h-4 text-coral-500" />
-            <span className="text-sm font-semibold text-coral-600">{journalEntries.length} Entries</span>
+            <span className="text-sm font-semibold text-coral-600">
+              {journalEntries.length} Entries
+            </span>
           </div>
         </div>
       </header>
@@ -456,20 +488,28 @@ export default function JournalPage() {
       <section className="py-8 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div
-            className={`transition-all duration-1000 ${isVisible ? "animate-slide-up opacity-100" : "opacity-0"} mb-8`}
+            className={`transition-all duration-1000 ${
+              isVisible ? "animate-slide-up opacity-100" : "opacity-0"
+            } mb-8`}
           >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Total Entries Stat */}
               <Card className="border-0 bg-linear-to-br from-coral-100/80 via-pink-100/80 to-rose-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-coral-700/80">Total Entries</p>
+                    <p className="text-sm font-semibold text-coral-700/80">
+                      Total Entries
+                    </p>
                     <div className="w-10 h-10 rounded-full bg-linear-to-br from-coral-400 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <BookOpen className="w-5 h-5 text-white" />
                     </div>
                   </div>
-                  <span className="text-5xl font-bold text-coral-600">{journalEntries.length}</span>
-                  <p className="text-xs text-coral-600 mt-2 font-medium">Reflections captured</p>
+                  <span className="text-5xl font-bold text-coral-600">
+                    {journalEntries.length}
+                  </span>
+                  <p className="text-xs text-coral-600 mt-2 font-medium">
+                    Reflections captured
+                  </p>
                 </CardContent>
               </Card>
 
@@ -477,13 +517,19 @@ export default function JournalPage() {
               <Card className="border-0 bg-linear-to-br from-blue-100/80 via-cyan-100/80 to-sky-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animation-delay-100 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-blue-700/80">This Week</p>
+                    <p className="text-sm font-semibold text-blue-700/80">
+                      This Week
+                    </p>
                     <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
                       <TrendingUp className="w-5 h-5 text-white" />
                     </div>
                   </div>
-                  <span className="text-5xl font-bold text-blue-600">{getThisWeekCount()}</span>
-                  <p className="text-xs text-blue-600 mt-2 font-medium">Recent entries</p>
+                  <span className="text-5xl font-bold text-blue-600">
+                    {getThisWeekCount()}
+                  </span>
+                  <p className="text-xs text-blue-600 mt-2 font-medium">
+                    Recent entries
+                  </p>
                 </CardContent>
               </Card>
 
@@ -491,13 +537,19 @@ export default function JournalPage() {
               <Card className="border-0 bg-linear-to-br from-purple-100/80 via-violet-100/80 to-fuchsia-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animation-delay-200 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-purple-700/80">Total Words</p>
+                    <p className="text-sm font-semibold text-purple-700/80">
+                      Total Words
+                    </p>
                     <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
                   </div>
-                  <span className="text-5xl font-bold text-purple-600">{getTotalWords()}</span>
-                  <p className="text-xs text-purple-600 mt-2 font-medium">Words written</p>
+                  <span className="text-5xl font-bold text-purple-600">
+                    {getTotalWords()}
+                  </span>
+                  <p className="text-xs text-purple-600 mt-2 font-medium">
+                    Words written
+                  </p>
                 </CardContent>
               </Card>
 
@@ -505,13 +557,19 @@ export default function JournalPage() {
               <Card className="border-0 bg-linear-to-br from-yellow-100/80 via-orange-100/80 to-amber-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animation-delay-300 group">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-orange-700/80">Avg Length</p>
+                    <p className="text-sm font-semibold text-orange-700/80">
+                      Avg Length
+                    </p>
                     <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
                       <Clock className="w-5 h-5 text-white" />
                     </div>
                   </div>
-                  <span className="text-5xl font-bold text-orange-600">{getAverageLength()}</span>
-                  <p className="text-xs text-orange-600 mt-2 font-medium">Words per entry</p>
+                  <span className="text-5xl font-bold text-orange-600">
+                    {getAverageLength()}
+                  </span>
+                  <p className="text-xs text-orange-600 mt-2 font-medium">
+                    Words per entry
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -519,8 +577,12 @@ export default function JournalPage() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Column - Write Entry Section */}
-            <div className={`transition-all duration-1000 ${isVisible ? "animate-slide-up opacity-100" : "opacity-0"}`}>
-              <Card className="border-0 bg-linear-to-br from-white via-coral-50/30 to-purple-50/30 backdrop-blur-sm shadow-xl overflow-hidden relative h-fit sticky top-24">
+            <div
+              className={`transition-all duration-1000 ${
+                isVisible ? "animate-slide-up opacity-100" : "opacity-0"
+              }`}
+            >
+              <Card className="border-0 bg-linear-to-br from-white via-coral-50/30 to-purple-50/30 backdrop-blur-sm shadow-xl overflow-hidden h-fit sticky top-24">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-coral-200/30 to-transparent rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-linear-to-tr from-purple-200/30 to-transparent rounded-full blur-3xl" />
 
@@ -546,7 +608,9 @@ export default function JournalPage() {
                         <CheckCircle className="w-20 h-20 text-coral-500 animate-float" />
                         <div className="absolute inset-0 w-20 h-20 bg-coral-500/20 rounded-full animate-ping" />
                       </div>
-                      <p className="text-2xl font-bold text-foreground">Entry saved!</p>
+                      <p className="text-2xl font-bold text-foreground">
+                        Entry saved!
+                      </p>
                       <p className="text-muted-foreground text-center max-w-md">
                         Your thoughts have been securely recorded.
                       </p>
@@ -587,7 +651,8 @@ export default function JournalPage() {
                           </Button>
                           {selectedImages.length > 0 && (
                             <span className="text-sm text-muted-foreground">
-                              {selectedImages.length} image{selectedImages.length > 1 ? "s" : ""} selected
+                              {selectedImages.length} image
+                              {selectedImages.length > 1 ? "s" : ""} selected
                             </span>
                           )}
                         </div>
@@ -634,8 +699,8 @@ export default function JournalPage() {
                         </Button>
                         <Button
                           onClick={() => {
-                            setEntryContent("")
-                            setSelectedImages([])
+                            setEntryContent("");
+                            setSelectedImages([]);
                           }}
                           variant="outline"
                           size="lg"
@@ -660,9 +725,13 @@ export default function JournalPage() {
                         <Calendar className="w-5 h-5 text-blue-500" />
                       </div>
                       <div>
-                        <span className="text-foreground">Your Journal Entries</span>
+                        <span className="text-foreground">
+                          Your Journal Entries
+                        </span>
                         <p className="text-sm text-muted-foreground font-normal mt-0.5">
-                          {journalEntries.length} {journalEntries.length === 1 ? "entry" : "entries"} recorded
+                          {journalEntries.length}{" "}
+                          {journalEntries.length === 1 ? "entry" : "entries"}{" "}
+                          recorded
                         </p>
                       </div>
                     </div>
@@ -684,14 +753,18 @@ export default function JournalPage() {
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground bg-gray-100 px-3 py-1.5 rounded-lg w-fit">
                                   <Calendar className="w-4 h-4 text-blue-500" />
-                                  {new Date(entry.createdAt + "Z").toLocaleDateString("en-US", {
-                                    weekday: "long",
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
+
+                                  {new Date(entry.createdAt).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      weekday: "long",
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }
+                                  )}
                                 </div>
                               </div>
                               <div className="flex gap-2">
@@ -699,7 +772,10 @@ export default function JournalPage() {
                                   <>
                                     <Button
                                       onClick={() => handleSaveEdit(entry.id)}
-                                      disabled={!editContent.trim() || updatingId === entry.id}
+                                      disabled={
+                                        !editContent.trim() ||
+                                        updatingId === entry.id
+                                      }
                                       variant="ghost"
                                       size="sm"
                                       className="text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200 hover:scale-110"
@@ -726,7 +802,9 @@ export default function JournalPage() {
                                       <Pencil className="w-5 h-5" />
                                     </Button>
                                     <Button
-                                      onClick={() => handleDeleteEntry(entry.id)}
+                                      onClick={() =>
+                                        handleDeleteEntry(entry.id)
+                                      }
                                       disabled={deletingId === entry.id}
                                       variant="ghost"
                                       size="sm"
@@ -748,7 +826,9 @@ export default function JournalPage() {
                                 <div className="relative">
                                   <textarea
                                     value={editContent}
-                                    onChange={(e) => setEditContent(e.target.value)}
+                                    onChange={(e) =>
+                                      setEditContent(e.target.value)
+                                    }
                                     className="w-full p-5 rounded-2xl bg-white border-2 border-blue-300 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none resize-none text-foreground transition-all duration-300 min-h-[180px] shadow-inner leading-relaxed"
                                     autoFocus
                                   />
@@ -771,7 +851,9 @@ export default function JournalPage() {
                                       type="button"
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => editFileInputRef.current?.click()}
+                                      onClick={() =>
+                                        editFileInputRef.current?.click()
+                                      }
                                       className="rounded-xl border-2 hover:bg-blue-50 hover:border-blue-200 transition-all duration-300"
                                     >
                                       <Upload className="w-4 h-4 mr-2" />
@@ -779,7 +861,8 @@ export default function JournalPage() {
                                     </Button>
                                     {editImages.length > 0 && (
                                       <span className="text-sm text-muted-foreground">
-                                        {editImages.length} image{editImages.length > 1 ? "s" : ""}
+                                        {editImages.length} image
+                                        {editImages.length > 1 ? "s" : ""}
                                       </span>
                                     )}
                                   </div>
@@ -787,7 +870,10 @@ export default function JournalPage() {
                                   {editImages.length > 0 && (
                                     <div className="grid grid-cols-3 gap-2">
                                       {editImages.map((img, idx) => (
-                                        <div key={idx} className="relative group/img">
+                                        <div
+                                          key={idx}
+                                          className="relative group/img"
+                                        >
                                           <img
                                             src={img || "/placeholder.svg"}
                                             alt={`Edit ${idx + 1}`}
@@ -808,28 +894,29 @@ export default function JournalPage() {
                             ) : (
                               <div className="mt-3 space-y-4">
                                 <div className="p-4 bg-white/50 rounded-xl">
-                                  <p className="text-foreground leading-relaxed whitespace-pre-wrap break-words text-[15px]">
+                                  <p className="text-foreground leading-relaxed whitespace-pre-wrap wrap-break-word text-[15px]">
                                     {entry.content?.text}
                                   </p>
                                 </div>
 
-                                {entry.content?.images && entry.content.images.length > 0 && (
-                                  <div className="grid grid-cols-2 gap-2">
-                                    {entry.content.images.map((img, idx) => (
-                                      <div
-                                        key={idx}
-                                        className="relative group/img overflow-hidden rounded-xl border-2 border-gray-200 hover:border-coral-300 transition-all duration-300"
-                                      >
-                                        <img
-                                          src={img || "/placeholder.svg"}
-                                          alt={`Journal image ${idx + 1}`}
-                                          className="w-full h-48 object-cover group-hover/img:scale-105 transition-transform duration-300"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-300" />
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
+                                {entry.content?.images &&
+                                  entry.content.images.length > 0 && (
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {entry.content.images.map((img, idx) => (
+                                        <div
+                                          key={idx}
+                                          className="relative group/img overflow-hidden rounded-xl border-2 border-gray-200 hover:border-coral-300 transition-all duration-300"
+                                        >
+                                          <img
+                                            src={img || "/placeholder.svg"}
+                                            alt={`Journal image ${idx + 1}`}
+                                            className="w-full h-48 object-cover group-hover/img:scale-105 transition-transform duration-300"
+                                          />
+                                          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-300" />
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                               </div>
                             )}
                           </div>
@@ -842,10 +929,12 @@ export default function JournalPage() {
                         <BookOpen className="w-16 h-16 mx-auto opacity-20" />
                         <div className="absolute inset-0 w-16 h-16 bg-coral-500/10 rounded-full blur-xl" />
                       </div>
-                      <p className="text-xl font-semibold mb-2">No journal entries yet.</p>
+                      <p className="text-xl font-semibold mb-2">
+                        No journal entries yet.
+                      </p>
                       <p className="text-sm max-w-md mx-auto">
-                        Start writing above to capture your thoughts and feelings! This is your personal space for
-                        reflection.
+                        Start writing above to capture your thoughts and
+                        feelings! This is your personal space for reflection.
                       </p>
                     </div>
                   )}
@@ -856,5 +945,5 @@ export default function JournalPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

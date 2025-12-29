@@ -18,4 +18,12 @@ public interface JournalRepository extends JpaRepository<JournalEntry, Long> {
             @Param("userId") String userId,
             @Param("fromDate") LocalDateTime fromDate
     );
+
+    @Query("""
+SELECT DISTINCT DATE(j.createdAt)
+FROM JournalEntry j
+WHERE j.userId = :userId
+""")
+List<java.time.LocalDate> findJournalDays(@Param("userId") String userId);
+
 }
