@@ -274,3 +274,29 @@
 .animation-delay-600 {
   animation-delay: 0.6s;
 }
+
+/* === PDF EXPORT MODE === */
+.pdf-export,
+.pdf-export * {
+  background: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  color: #000000 !important;
+}
+
+/* Kill gradients & Tailwind effects */
+.pdf-export [class*="bg-"],
+.pdf-export [class*="from-"],
+.pdf-export [class*="via-"],
+.pdf-export [class*="to-"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* SVG safety */
+.pdf-export svg * {
+  fill: #000000 !important;
+  stroke: #000000 !important;
+}

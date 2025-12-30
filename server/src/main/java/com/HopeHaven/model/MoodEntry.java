@@ -41,4 +41,3 @@ public class MoodEntry {
         this.timestamp = timestamp;
     }
  }
-}

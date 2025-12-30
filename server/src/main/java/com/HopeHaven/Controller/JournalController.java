@@ -49,11 +49,11 @@ public class JournalController {
                 .findByUserIdAndCipherTextIsNotNullOrderByCreatedAtDesc(user.getUid())
                 .stream()
                 .map(e -> new EncryptedJournalView(
-        e.getId(),
-        e.getUserId(),
-        e.getCipherText(),
-        e.getIv(),
-        e.getCreatedAt()
+    e.getId(),
+    e.getUserId(),
+    e.getCipherText(),
+    e.getIv(),
+    e.getCreatedAt().toString()
 ))
 
                 .collect(Collectors.toList());

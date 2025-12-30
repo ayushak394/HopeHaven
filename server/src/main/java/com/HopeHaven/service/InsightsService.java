@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.ZoneId;
+import java.util.stream.Collectors;
 
 @Service
 public class InsightsService {
@@ -40,17 +42,20 @@ public class InsightsService {
 
     private String buildPrompt(List<MoodEntry> moods, List<String> journals) {
 
-    String moodText;
-    if (moods == null || moods.isEmpty()) {
-        moodText = "No mood logs available.";
-    } else {
-        moodText = moods.stream()
-                .limit(10)
-                .map(m ->
-                        m.getMood() + " on " + m.getTimestamp().toLocalDate()
-                )
-                .reduce("", (a, b) -> a + "- " + b + "\n");
-    }
+String moodText;
+if (moods == null || moods.isEmpty()) {
+    moodText = "No mood logs available.";
+} else {
+    moodText = moods.stream()
+            .limit(10)
+            .map(m ->
+                    m.getMood() + " on " +
+                    m.getTimestamp()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+            )
+            .collect(Collectors.joining("\n- ", "- ", "\n"));
+}
 
     String journalText;
     if (journals == null || journals.isEmpty()) {

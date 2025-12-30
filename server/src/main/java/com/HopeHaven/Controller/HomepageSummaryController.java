@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.ZoneId;
+
 
 @RestController
 public class HomepageSummaryController {
@@ -52,7 +54,9 @@ public class HomepageSummaryController {
         if (moods.isEmpty()) return 0;
 
         Set<LocalDate> dates = moods.stream()
-                .map(m -> m.getTimestamp().toLocalDate())
+                .map(m -> m.getTimestamp()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate())
                 .collect(Collectors.toSet());
 
         int streak = 0;
@@ -65,15 +69,18 @@ public class HomepageSummaryController {
     }
 
     private int calculateWeeklyCompletion(List<MoodEntry> moods) {
-        LocalDate today = LocalDate.now();
-        LocalDate monday = today.with(DayOfWeek.MONDAY);
+    LocalDate today = LocalDate.now();
+    LocalDate monday = today.with(DayOfWeek.MONDAY);
 
-        long daysLogged = moods.stream()
-                .map(m -> m.getTimestamp().toLocalDate())
-                .filter(date -> !date.isBefore(monday))
-                .distinct()
-                .count();
+    long daysLogged = moods.stream()
+            .map(m -> m.getTimestamp()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate())
+            .filter(date -> !date.isBefore(monday))
+            .distinct()
+            .count();
 
-        return (int) ((daysLogged / 7.0) * 100);
-    }
+    return (int) ((daysLogged / 7.0) * 100);
+}
+
 }

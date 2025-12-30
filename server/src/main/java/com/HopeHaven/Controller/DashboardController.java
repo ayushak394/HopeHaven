@@ -19,6 +19,10 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.ZoneId;
+import java.time.Instant;
+
+
 
 @RestController
 public class DashboardController {
@@ -48,12 +52,15 @@ public class DashboardController {
         List<LocalDate> moodDates = new ArrayList<>();
 
         for (Object[] row : moodRows) {
-            String mood = (String) row[0];
-            LocalDateTime ldt = (LocalDateTime) row[1];
+    String mood = (String) row[0];
+    Instant ts = (Instant) row[1];
 
-            moodScores.add(MoodScoreUtil.score(mood));
-            moodDates.add(ldt.toLocalDate());
-        }
+    moodScores.add(MoodScoreUtil.score(mood));
+    moodDates.add(
+        ts.atZone(ZoneId.systemDefault()).toLocalDate()
+    );
+}
+
 
         List<Double> emaValues = new ArrayList<>();
 
@@ -119,7 +126,9 @@ public class DashboardController {
                 .count();
 
         Set<LocalDate> activeDays = moods.stream()
-                .map(m -> m.getTimestamp().toLocalDate())
+                .map(m -> m.getTimestamp()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate())
                 .collect(Collectors.toSet());
 
         long totalDays = activeDays.isEmpty()
@@ -150,7 +159,8 @@ public class DashboardController {
 
         for (MoodEntry m : moods) {
             int week = m.getTimestamp()
-                    .get(weekFields.weekOfWeekBasedYear());
+        .atZone(ZoneId.systemDefault())
+        .get(weekFields.weekOfWeekBasedYear());
 
             moodsByWeek
                     .computeIfAbsent(week, k -> new ArrayList<>())
@@ -159,7 +169,8 @@ public class DashboardController {
 
         for (JournalEntry j : journals) {
             int week = j.getCreatedAt()
-                    .get(weekFields.weekOfWeekBasedYear());
+        .atZone(ZoneId.systemDefault())
+        .get(weekFields.weekOfWeekBasedYear());
 
             journalsByWeek
                     .computeIfAbsent(week, k -> new ArrayList<>())
@@ -185,7 +196,9 @@ public class DashboardController {
                     Math.min(activityCount / 10.0, 1.0) * 100;
 
             Set<LocalDate> weekActiveDays = weekMoods.stream()
-                    .map(m -> m.getTimestamp().toLocalDate())
+                    .map(m -> m.getTimestamp()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate())
                     .collect(Collectors.toSet());
 
             double consistencyScore =

@@ -16,9 +16,10 @@ import {
   BarChart3,
   PieChartIcon,
 } from "lucide-react";
+import jsPDF from "jspdf";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import { app } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import {
@@ -65,6 +66,9 @@ const MOOD_SCALE = {
   4: "Calm",
   5: "Happy",
 };
+
+const waitforchartload = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 const getMoodEmoji = (moodValue: number): string => {
   if (moodValue >= 4.5) return "😊";
@@ -125,6 +129,203 @@ const getMoodDistribution = (moods: any[] = []) => {
         ? "😢"
         : "😰",
   }));
+};
+
+const addCoverPage = (pdf: jsPDF, userName: string = "HopeHaven User") => {
+  const w = pdf.internal.pageSize.getWidth();
+  const h = pdf.internal.pageSize.getHeight();
+
+  /* ======================
+     Base background
+  ====================== */
+  pdf.setFillColor(255, 251, 245); // warm off-white
+  pdf.rect(0, 0, w, h, "F");
+
+  /* ======================
+     Soft decorative blobs
+     (mimics website glow)
+  ====================== */
+  pdf.setFillColor(255, 237, 213); // coral-100
+  pdf.circle(40, 40, 35, "F");
+
+  pdf.setFillColor(254, 215, 170); // orange-200
+  pdf.circle(w - 30, 80, 45, "F");
+
+  /* ======================
+     Brand title
+  ====================== */
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(36);
+  pdf.setTextColor(124, 45, 18); // coral-800
+  pdf.text("HopeHaven", w / 2, 85, { align: "center" });
+
+  /* ======================
+     Tagline
+  ====================== */
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(16);
+  pdf.setTextColor(180, 83, 9); // orange-600
+  pdf.text("Your mental wellness, thoughtfully tracked", w / 2, 100, {
+    align: "center",
+  });
+
+  /* ======================
+     Main title
+  ====================== */
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(26);
+  pdf.setTextColor(15, 23, 42);
+  pdf.text("Wellness Report", w / 2, 145, { align: "center" });
+
+  const cardX = 30;
+  const cardY = 170;
+  const cardW = w - 60;
+  const cardH = 75;
+
+  pdf.setFillColor(255, 255, 255);
+  pdf.roundedRect(cardX, cardY, cardW, cardH, 14, 14, "F");
+
+  pdf.setDrawColor(254, 215, 170);
+  pdf.setLineWidth(1);
+  pdf.roundedRect(cardX, cardY, cardW, cardH, 14, 14);
+
+  pdf.setFontSize(14);
+  pdf.setTextColor(100, 116, 139);
+  pdf.text("Prepared for", w / 2, cardY + 28, { align: "center" });
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(20);
+  pdf.setTextColor(30, 41, 59);
+  pdf.text(userName, w / 2, cardY + 48, { align: "center" });
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(12);
+  pdf.setTextColor(148, 163, 184);
+  pdf.text(
+    `Generated on ${new Date().toLocaleDateString()}`,
+    w / 2,
+    cardY + 65,
+    { align: "center" }
+  );
+
+  /* ======================
+     Footer
+  ====================== */
+  pdf.setFontSize(11);
+  pdf.setTextColor(180, 83, 9);
+  pdf.text(
+    "Mental wellness is a journey — one step at a time.",
+    w / 2,
+    h - 30,
+    { align: "center" }
+  );
+};
+
+const addPageNumbers = (pdf: jsPDF) => {
+  const pageCount = pdf.getNumberOfPages();
+  const w = pdf.internal.pageSize.getWidth();
+  const h = pdf.internal.pageSize.getHeight();
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.setTextColor(148, 163, 184); // slate-400
+
+  for (let i = 2; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.text(`Page ${i - 1} of ${pageCount - 1}`, w / 2, h - 10, {
+      align: "center",
+    });
+  }
+};
+
+const downloadReport = async (userName: string) => {
+  await waitforchartload(2000);
+
+  const element = document.getElementById("dashboard-report");
+  if (!element) return;
+
+  const dataUrl = await toPng(element, {
+    cacheBust: true,
+    backgroundColor: "#ffffff",
+    pixelRatio: 2,
+  });
+
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  // 1️⃣ Cover Page
+  addCoverPage(pdf, userName);
+
+  // 2️⃣ Dashboard Pages
+  pdf.addPage();
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const marginX = 10;
+  const marginY = 12;
+
+  const usableWidth = pageWidth - marginX * 2;
+
+  const img = new Image();
+  img.src = dataUrl;
+  await new Promise((resolve) => (img.onload = resolve));
+
+  const imgHeight = (img.height * usableWidth) / img.width;
+
+  let y = 0;
+  let remainingHeight = imgHeight;
+
+  while (remainingHeight > 0) {
+    pdf.addImage(dataUrl, "PNG", marginX, y + marginY, usableWidth, imgHeight);
+
+    remainingHeight -= pageHeight - marginY * 2;
+
+    if (remainingHeight > 10) {
+      pdf.addPage();
+      y -= pageHeight - marginY * 2;
+    }
+  }
+
+  // 3️⃣ Page Numbers
+  addPageNumbers(pdf);
+
+  pdf.save("HopeHaven_Dashboard_Report.pdf");
+};
+
+const renderActivityLabel = ({
+  cx,
+  cy,
+  midAngle,
+  outerRadius,
+  percent,
+  payload,
+}: any) => {
+  const RADIAN = Math.PI / 180;
+  const radius = outerRadius + 18;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#374151" // slate-700
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={500}
+    >
+      {payload.name}
+      <tspan
+        x={x}
+        dy="1.2em"
+        fill="#6B7280" // slate-500
+        fontSize={11}
+      >
+        {Math.round(percent * 100)}%
+      </tspan>
+    </text>
+  );
 };
 
 export default function DashboardPage() {
@@ -218,115 +419,123 @@ export default function DashboardPage() {
               Wellness Dashboard
             </h1>
           </div>
-          <Sparkles className="w-6 h-6 text-coral-500 animate-pulse" />
+          <Button
+            onClick={() =>
+              downloadReport(user?.displayName || "HopeHaven User")
+            }
+            className="bg-linear-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Download Your Report
+          </Button>
         </div>
       </header>
 
       {/* Main Content */}
+
       <section className="py-8 px-4 relative">
         <div className="max-w-7xl mx-auto">
           {/* Overview Section */}
-          <div
-            className={`transition-all duration-1000 ${
-              isVisible ? "animate-slide-up opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className="grid md:grid-cols-4 gap-6 mb-8">
-              {/* Average Mood Card */}
-              <Card className="border-0 bg-linear-to-br from-yellow-100/80 via-orange-100/80 to-coral-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in group">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-orange-700/80">
-                      Average Mood
-                    </p>
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-                      <Target className="w-5 h-5 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span
-                      className={`text-5xl font-bold ${getMoodColor(
-                        dashboardData?.averageMood || 0
-                      )}`}
-                    >
-                      {dashboardData?.averageMood?.toFixed(1) || "0"}
-                    </span>
-                    <span className="text-3xl">
-                      {getMoodEmoji(dashboardData?.averageMood || 0)}
-                    </span>
-                  </div>
-                  <p className="text-xs text-orange-600 mt-2 font-medium">
-                    {dashboardData && dashboardData.averageMood >= 4
-                      ? "Excellent!"
-                      : "Keep going!"}
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Total Mood Entries Card */}
-              <Card className="border-0 bg-linear-to-br from-coral-100/80 via-pink-100/80 to-rose-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-100 group">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-coral-700/80">
-                      Mood Logs
-                    </p>
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-coral-400 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <Heart className="w-5 h-5 text-white fill-white animate-pulse-gentle" />
-                    </div>
-                  </div>
-                  <span className="text-5xl font-bold text-coral-600">
-                    {dashboardData?.totalMoods || 0}
-                  </span>
-                  <p className="text-xs text-coral-600 mt-2 font-medium">
-                    Total check-ins
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Journal Entries Card */}
-              <Card className="border-0 bg-linear-to-br from-blue-100/80 via-cyan-100/80 to-sky-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-200 group">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-blue-700/80">
-                      Journal Entries
-                    </p>
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
-                      <BookOpen className="w-5 h-5 text-white" />
-                    </div>
-                  </div>
-                  <span className="text-5xl font-bold text-blue-600">
-                    {dashboardData?.totalJournals || 0}
-                  </span>
-                  <p className="text-xs text-blue-600 mt-2 font-medium">
-                    Reflections written
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Sentiment Score Card */}
-              <Card className="border-0 bg-linear-to-br from-purple-100/80 via-violet-100/80 to-fuchsia-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-300 group">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-purple-700/80">
-                      Sentiment
-                    </p>
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <Brain className="w-5 h-5 text-white" />
-                    </div>
-                  </div>
-                  <span className="text-5xl font-bold text-purple-600">
-                    {(dashboardData?.averageSentiment || 0).toFixed(1)}
-                  </span>
-                  <p className="text-xs text-purple-600 mt-2 font-medium">
-                    AI analysis
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Charts Section - Expanded Grid */}
           <div id="dashboard-report">
+            <div
+              className={`transition-all duration-1000 ${
+                isVisible ? "animate-slide-up opacity-100" : "opacity-0"
+              }`}
+            >
+              <div className="grid md:grid-cols-4 gap-6 mb-8">
+                {/* Average Mood Card */}
+                <Card className="border-0 bg-linear-to-br from-yellow-100/80 via-orange-100/80 to-coral-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold text-orange-700/80">
+                        Average Mood
+                      </p>
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                        <Target className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className={`text-5xl font-bold ${getMoodColor(
+                          dashboardData?.averageMood || 0
+                        )}`}
+                      >
+                        {dashboardData?.averageMood?.toFixed(1) || "0"}
+                      </span>
+                      <span className="text-3xl">
+                        {getMoodEmoji(dashboardData?.averageMood || 0)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-orange-600 mt-2 font-medium">
+                      {dashboardData && dashboardData.averageMood >= 4
+                        ? "Excellent!"
+                        : "Keep going!"}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Total Mood Entries Card */}
+                <Card className="border-0 bg-linear-to-br from-coral-100/80 via-pink-100/80 to-rose-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-100 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold text-coral-700/80">
+                        Mood Logs
+                      </p>
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-coral-400 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Heart className="w-5 h-5 text-white fill-white animate-pulse-gentle" />
+                      </div>
+                    </div>
+                    <span className="text-5xl font-bold text-coral-600">
+                      {dashboardData?.totalMoods || 0}
+                    </span>
+                    <p className="text-xs text-coral-600 mt-2 font-medium">
+                      Total check-ins
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Journal Entries Card */}
+                <Card className="border-0 bg-linear-to-br from-blue-100/80 via-cyan-100/80 to-sky-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-200 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold text-blue-700/80">
+                        Journal Entries
+                      </p>
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
+                        <BookOpen className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <span className="text-5xl font-bold text-blue-600">
+                      {dashboardData?.totalJournals || 0}
+                    </span>
+                    <p className="text-xs text-blue-600 mt-2 font-medium">
+                      Reflections written
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Sentiment Score Card */}
+                <Card className="border-0 bg-linear-to-br from-purple-100/80 via-violet-100/80 to-fuchsia-100/80 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-fade-in animation-delay-300 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold text-purple-700/80">
+                        Sentiment
+                      </p>
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Brain className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <span className="text-5xl font-bold text-purple-600">
+                      {(dashboardData?.averageSentiment || 0).toFixed(1)}
+                    </span>
+                    <p className="text-xs text-purple-600 mt-2 font-medium">
+                      AI analysis
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <div className="h-10" />
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
               {/* Mood Trend Chart */}
               <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-100 overflow-hidden group lg:col-span-2">
@@ -415,17 +624,10 @@ export default function DashboardPage() {
                           data={activityData}
                           cx="50%"
                           cy="50%"
-                          labelLine={false}
-                          label={(props) => {
-                            const { percent, payload } = props;
-                            return `${payload.emoji} ${(percent! * 100).toFixed(
-                              0
-                            )}%`;
-                          }}
+                          label={renderActivityLabel}
+                          labelLine={{ stroke: "#CBD5E1", strokeWidth: 1 }}
                           outerRadius={100}
-                          fill="#8884d8"
                           dataKey="value"
-                          paddingAngle={5}
                         >
                           {COLORS.map((color, index) => (
                             <Cell key={`cell-${index}`} fill={color} />
@@ -532,9 +734,7 @@ export default function DashboardPage() {
                           )}%`;
                         }}
                         outerRadius={90}
-                        fill="#8884d8"
                         dataKey="count"
-                        paddingAngle={3}
                       >
                         {moodDistributionData.map((entry, index) => (
                           <Cell
