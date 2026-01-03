@@ -30,6 +30,7 @@ interface MoodEntry {
 interface MoodStats {
   mood: string
   count: number
+  [key: string]: string | number
 }
 
 const MOODS = [
@@ -464,7 +465,7 @@ export default function MoodTrackerPage() {
                         cx="50%"
                         cy="50%"
                         outerRadius={100}
-                        label={({ mood, count }) => `${mood}: ${count}`}
+                        label={(entry: any) => `${entry.mood}: ${entry.count}`}
                         paddingAngle={3}
                       >
                         {moodStats.map((entry) => (

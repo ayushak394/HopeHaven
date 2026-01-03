@@ -159,12 +159,6 @@ export default function SettingsPage() {
     setIsSavingName(false)
   }
 
-  async function uploadToFirebase(croppedBlob, uid) {
-    const fileRef = ref(storage, `avatars/${uid}.jpg`)
-    await uploadBytes(fileRef, croppedBlob)
-    return await getDownloadURL(fileRef)
-  }
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -390,7 +384,7 @@ export default function SettingsPage() {
                       <div className="w-32 h-32 rounded-full bg-linear-to-br from-coral-400 via-pink-400 to-coral-600 flex items-center justify-center overflow-hidden border-4 border-white shadow-2xl group-hover/avatar:scale-105 transition-transform duration-300">
                         {profileImage || userProfile?.profilePicture ? (
                           <img
-                            src={profileImage || userProfile.profilePicture!}
+                            src={profileImage || userProfile?.profilePicture!}
                             alt="Profile"
                             className="w-full h-full object-cover"
                           />
@@ -494,7 +488,7 @@ export default function SettingsPage() {
                     {themes.map((t) => (
                       <button
                         key={t.id}
-                        onClick={() => setTheme(t.id)}
+                        onClick={() => setTheme(t.id as Theme)}
                         className={`p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center gap-4 relative overflow-hidden group/theme ${
                           theme === t.id
                             ? "border-coral-500 bg-linear-to-br from-coral-50 to-pink-50 shadow-lg"
@@ -730,9 +724,9 @@ export default function SettingsPage() {
       </div>
 
       <AvatarCropModal
-        isOpen={cropModalOpen}
+        open={cropModalOpen}
         onClose={() => setCropModalOpen(false)}
-        imageSrc={imageToCrop}
+        imageUrl={imageToCrop}
         onCropComplete={handleCroppedImage}
       />
 

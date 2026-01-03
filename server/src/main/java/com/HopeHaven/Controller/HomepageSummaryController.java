@@ -38,7 +38,7 @@ public class HomepageSummaryController {
         List<MoodEntry> moods = moodRepository.findByUserIdOrderByTimestampDesc(uid);
         List<JournalEntry> journals = journalRepository.findByUserIdOrderByCreatedAtDesc(uid);
 
-        int streak = calculateStreak(moods);
+        int streak = calculateStreak(moods, journals);
         int weeklyCompletion = calculateWeeklyCompletion(moods);
 
         Map<String, Object> map = new HashMap<>();
@@ -50,23 +50,46 @@ public class HomepageSummaryController {
         return map;
     }
 
-    private int calculateStreak(List<MoodEntry> moods) {
-        if (moods.isEmpty()) return 0;
+    private int calculateStreak(
+        List<MoodEntry> moods,
+        List<JournalEntry> journals
+) {
+    if (moods.isEmpty() && journals.isEmpty()) return 0;
 
-        Set<LocalDate> dates = moods.stream()
-                .map(m -> m.getTimestamp()
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate())
-                .collect(Collectors.toSet());
+    // Collect all active dates (mood OR journal)
+    Set<LocalDate> activeDates = new HashSet<>();
 
-        int streak = 0;
-        LocalDate today = LocalDate.now();
+    moods.forEach(m ->
+        activeDates.add(
+            m.getTimestamp()
+             .atZone(ZoneId.systemDefault())
+             .toLocalDate()
+        )
+    );
 
-        while (dates.contains(today.minusDays(streak))) {
-            streak++;
-        }
-        return streak;
+    journals.forEach(j ->
+        activeDates.add(
+            j.getCreatedAt()
+             .atZone(ZoneId.systemDefault())
+             .toLocalDate()
+        )
+    );
+
+    // Start from the most recent active day
+    LocalDate today = LocalDate.now();
+    LocalDate cursor = activeDates.contains(today)
+            ? today
+            : today.minusDays(1);
+
+    int streak = 0;
+
+    while (activeDates.contains(cursor)) {
+        streak++;
+        cursor = cursor.minusDays(1);
     }
+
+    return streak;
+}
 
     private int calculateWeeklyCompletion(List<MoodEntry> moods) {
     LocalDate today = LocalDate.now();
