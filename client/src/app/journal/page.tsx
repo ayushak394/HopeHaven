@@ -20,6 +20,8 @@ import {
   Clock,
   Upload,
   Lock,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
@@ -60,12 +62,67 @@ export default function JournalPage() {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
-
   const [isLocked, setIsLocked] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [passcode, setPasscode] = useState("");
   const [passcodeError, setPasscodeError] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const SpeechRecognition =
+    typeof window !== "undefined"
+      ? (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition
+      : null;
+
+  const startListening = () => {
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    recognition.onresult = (event: any) => {
+      let finalTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        setEntryContent((prev) =>
+          prev.length === 0
+            ? finalTranscript.trim()
+            : prev + " " + finalTranscript.trim(),
+        );
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+    setIsListening(true);
+  };
+
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setIsListening(false);
+  };
 
   const auth = getAuth(app);
   const router = useRouter();
@@ -93,7 +150,7 @@ export default function JournalPage() {
         "http://localhost:8080/api/journal-lock/status",
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (response.data.enabled) {
@@ -123,7 +180,7 @@ export default function JournalPage() {
       const response = await axios.post(
         "http://localhost:8080/api/journal-lock/verify",
         { passcode },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       if (response.data.success) {
@@ -154,7 +211,7 @@ export default function JournalPage() {
         "http://localhost:8080/api/journal/all-encrypted",
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       const entries: JournalEntry[] = response.data;
@@ -200,7 +257,7 @@ export default function JournalPage() {
       await axios.post(
         "http://localhost:8080/api/journal/add-encrypted",
         { cipherText: cipherTextB64, iv: ivB64 },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       setSubmitted(true);
@@ -219,7 +276,7 @@ export default function JournalPage() {
   };
 
   const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const files = event.target.files;
     if (!files) return;
@@ -237,7 +294,7 @@ export default function JournalPage() {
   };
 
   const handleEditImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const files = event.target.files;
     if (!files) return;
@@ -292,7 +349,7 @@ export default function JournalPage() {
       await axios.put(
         `http://localhost:8080/api/journal/update/${entryId}`,
         { cipherText: cipherTextB64, iv: ivB64 },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       setEditingId(null);
@@ -335,7 +392,7 @@ export default function JournalPage() {
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
     return journalEntries.filter(
-      (entry) => new Date(entry.createdAt) > oneWeekAgo
+      (entry) => new Date(entry.createdAt) > oneWeekAgo,
     ).length;
   };
 
@@ -673,6 +730,28 @@ export default function JournalPage() {
                           </div>
                         )}
                       </div>
+                      <Button
+                        onClick={isListening ? stopListening : startListening}
+                        className={`w-full mb-3 py-3 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-white ${
+                          isListening
+                            ? "bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl"
+                            : "bg-linear-to-r from-coral-500 to-coral-600 hover:from-coral-600 hover:to-coral-700 text-white shadow-md hover:shadow-lg hover:scale-[1.02]"
+                        }`}
+                      >
+                        <span
+                          className={`text-lg transition-all ${isListening ? "animate-pulse" : ""}`}
+                        >
+                          {isListening ? (
+                            <MicOff className="w-5 h-5 text-white-500" />
+                          ) : (
+                            <Mic className="w-5 h-5" />
+                          )}
+                        </span>
+                        <span>{isListening ? "Stop Speaking" : "Speak"}</span>
+                        {isListening && (
+                          <div className="w-4 h-4 bg-white/30 rounded-full animate-pulse" />
+                        )}
+                      </Button>
 
                       <div className="flex gap-3">
                         <Button
@@ -759,7 +838,7 @@ export default function JournalPage() {
                                       day: "numeric",
                                       hour: "2-digit",
                                       minute: "2-digit",
-                                    }
+                                    },
                                   )}
                                 </div>
                               </div>
