@@ -1,11 +1,22 @@
-# Use Java image
-FROM eclipse-temurin:21-jdk-jammy
+# ---------- BUILD STAGE ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy jar file
-COPY target/*.jar app.jar
+# Copy project files
+COPY . .
 
-# Run app
-CMD ["sh", "-c", "sleep 15 && java -jar app.jar"]
+# Build the JAR
+RUN mvn clean package -DskipTests
+
+
+# ---------- RUN STAGE ----------
+FROM eclipse-temurin:21-jdk-jammy
+
+WORKDIR /app
+
+# Copy built jar from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Run application
+CMD ["java", "-jar", "app.jar"]
