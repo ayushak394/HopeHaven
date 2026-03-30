@@ -62,7 +62,7 @@ export default function HopeHavenLanding() {
         router.push("/home");
 
         try {
-          const res = await axios.get("http://localhost:8080/api/secure-data", {
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/secure-data`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log(res.data);

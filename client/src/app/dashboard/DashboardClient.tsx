@@ -357,7 +357,7 @@ export default function DashboardPage() {
   const fetchDashboardData = async (authUser: any) => {
     try {
       const token = await authUser.getIdToken();
-      const response = await axios.get("http://localhost:8080/api/dashboard", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDashboardData(response.data);

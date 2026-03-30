@@ -83,7 +83,7 @@ export default function MoodTrackerPage() {
   const fetchMoodEntries = async (authUser: any) => {
     try {
       const token = await authUser.getIdToken()
-      const response = await axios.get("http://localhost:8080/api/moods/all", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/moods/all`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setMoodEntries(response.data)
@@ -114,7 +114,7 @@ export default function MoodTrackerPage() {
     try {
       const token = await user.getIdToken()
       await axios.post(
-        "http://localhost:8080/api/moods/track",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/moods/track`,
         { mood: selectedMood },
         { headers: { Authorization: `Bearer ${token}` } },
       )

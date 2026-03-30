@@ -120,7 +120,7 @@ export default function SettingsPage() {
       try {
         const token = await authUser.getIdToken();
 
-        const res = await axios.get("http://localhost:8080/api/user/profile", {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -136,7 +136,7 @@ export default function SettingsPage() {
         setDisplayName(dbUser.name);
 
         const lockStatusRes = await axios.get(
-          "http://localhost:8080/api/journal-lock/status",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/status`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -167,7 +167,7 @@ export default function SettingsPage() {
       const token = await auth.currentUser?.getIdToken();
 
       await axios.put(
-        "http://localhost:8080/api/user/update-name",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/update-name`,
         { newName: displayName },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -205,7 +205,7 @@ export default function SettingsPage() {
 
       // 2) Save to backend
       await axios.put(
-        "http://localhost:8080/api/user/update-avatar",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/update-avatar`,
         { avatarUrl: downloadUrl },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -234,7 +234,7 @@ export default function SettingsPage() {
       const token = await auth.currentUser?.getIdToken();
 
       await axios.post(
-        "http://localhost:8080/api/journal-lock/enable",
+       `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/enable`,
         { passcode: newPasscode },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -259,7 +259,7 @@ export default function SettingsPage() {
 
       // Verify passcode first
       const verifyRes = await axios.post(
-        "http://localhost:8080/api/journal-lock/verify",
+       `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/verify`,
         { passcode: verifyPasscode },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -272,7 +272,7 @@ export default function SettingsPage() {
 
       // Disable lock
       await axios.post(
-        "http://localhost:8080/api/journal-lock/disable",
+       `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/disable`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -301,7 +301,7 @@ export default function SettingsPage() {
       const token = await auth.currentUser?.getIdToken();
 
       await axios.post(
-        "http://localhost:8080/api/journal-lock/change",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/change`,
         { oldPasscode, newPasscode },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -331,7 +331,7 @@ export default function SettingsPage() {
       const token = await auth.currentUser?.getIdToken();
 
       // Send DELETE request to backend
-      await axios.delete("http://localhost:8080/api/user/delete", {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/user/delete`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

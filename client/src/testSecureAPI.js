@@ -9,7 +9,7 @@ export async function testSecureAPI() {
 
   const token = await auth.currentUser.getIdToken();
 
-  const res = await axios.get("http://localhost:8080/api/secure-data", {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/secure-data`, {
     headers: { Authorization: `Bearer ${token}` }
   });
 

@@ -48,7 +48,7 @@ export default function InsightsPage() {
 
       // 1) Get encrypted journals
       const encResp = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/journal/all-encrypted`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal/all-encrypted`,
         { headers: { Authorization: `Bearer ${token}` } },
       )
 
@@ -68,7 +68,7 @@ export default function InsightsPage() {
 
       // 3) Call backend to generate insights (backend will fetch moods itself)
       const aiResp = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/insights/generate`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/insights/generate`,
         {
           journals: decryptedJournals,
         },

@@ -147,7 +147,7 @@ export default function JournalPage() {
     try {
       const token = await authUser.getIdToken();
       const response = await axios.get(
-        "http://localhost:8080/api/journal-lock/status",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/status`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -178,7 +178,7 @@ export default function JournalPage() {
     try {
       const token = await user.getIdToken();
       const response = await axios.post(
-        "http://localhost:8080/api/journal-lock/verify",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal-lock/verify`,
         { passcode },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -208,7 +208,7 @@ export default function JournalPage() {
       const key = await getOrCreateUserKey(authUser.uid);
 
       const response = await axios.get(
-        "http://localhost:8080/api/journal/all-encrypted",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal/all-encrypted`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -255,7 +255,7 @@ export default function JournalPage() {
       const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key);
 
       await axios.post(
-        "http://localhost:8080/api/journal/add-encrypted",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal/add-encrypted`,
         { cipherText: cipherTextB64, iv: ivB64 },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -347,7 +347,7 @@ export default function JournalPage() {
       const { cipherTextB64, ivB64 } = await encryptJSON(journalData, key);
 
       await axios.put(
-        `http://localhost:8080/api/journal/update/${entryId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal/update/${entryId}`,
         { cipherText: cipherTextB64, iv: ivB64 },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -369,7 +369,7 @@ export default function JournalPage() {
     setDeletingId(entryId);
     try {
       const token = await user.getIdToken();
-      await axios.delete(`http://localhost:8080/api/journal/${entryId}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/journal/${entryId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
