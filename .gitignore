@@ -46,7 +46,7 @@ yarn-error.log*
 .env.test
 .env.stage
 server/src/main/resources/firebase-service-account.json
-server/src/main/resources/*.properties
+server/src/main/resources/application-*.properties
 *.pem
 
 # ========================
@@ -100,6 +100,14 @@ temp/
 # Java artifacts
 # ========================
 *.class
-*.jar
 *.war
 *.ear
+
+application-secret.properties
+application-prod.properties
+*.key
+*.crt
+*.p12
+*.keystore
+*.jks
+docker-compose.override.yml

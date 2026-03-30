@@ -26,36 +26,50 @@ public class FirebaseTokenFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
-            chain.doFilter(request, response);
-            return;
-        }
+    HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        String header = httpRequest.getHeader("Authorization");
-
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            try {
-                FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-                
-                userService.saveOrGetUser(
-                        decodedToken.getUid(),
-                        decodedToken.getName(),
-                        decodedToken.getEmail()
-                );
-                
-                request.setAttribute("firebaseUser", decodedToken);
-            } catch (Exception e) {
-                throw new ServletException("Invalid Firebase ID token", e);
-            }
-        } else {
-            throw new ServletException("Missing Authorization header");
-        }
-
+    // ✅ Allow preflight requests
+    if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
         chain.doFilter(request, response);
+        return;
     }
+
+    String path = httpRequest.getRequestURI();
+
+    // ✅ Allow public routes
+    if (path.equals("/") || path.startsWith("/api/public") || path.startsWith("/auth")) {
+        chain.doFilter(request, response);
+        return;
+    }
+
+    String header = httpRequest.getHeader("Authorization");
+
+    if (header != null && header.startsWith("Bearer ")) {
+        String token = header.substring(7);
+        try {
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+
+            userService.saveOrGetUser(
+                    decodedToken.getUid(),
+                    decodedToken.getName(),
+                    decodedToken.getEmail()
+            );
+
+            request.setAttribute("firebaseUser", decodedToken);
+
+        } catch (Exception e) {
+            throw new ServletException("Invalid Firebase ID token", e);
+        }
+    } else {
+        // ✅ Proper response instead of crash
+        ((jakarta.servlet.http.HttpServletResponse) response)
+                .sendError(401, "Unauthorized");
+        return;
+    }
+
+    chain.doFilter(request, response);
+}
 }

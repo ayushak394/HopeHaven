@@ -1,4 +1,4 @@
-package com.HopeHaven.Controller;
+package com.HopeHaven.controller;
 
 import com.HopeHaven.model.JournalEntry;
 import com.HopeHaven.model.MoodEntry;

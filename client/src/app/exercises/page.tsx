@@ -1,10 +1,10 @@
 import { Metadata } from "next";
-import MoodTracker from "./MoodTrackerClient";
+import ExerciseClient from "./ExercisesClient";
 
 export const metadata: Metadata = {
-  title: "MoodTracker",
+  title: "Calm Exercises",
 };
 
 export default function Page() {
-  return <MoodTracker />;
+  return <ExerciseClient />;
 }
