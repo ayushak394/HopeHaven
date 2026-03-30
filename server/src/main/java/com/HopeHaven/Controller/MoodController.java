@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/moods")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "")
 public class MoodController {
 
     private final MoodService moodService;
