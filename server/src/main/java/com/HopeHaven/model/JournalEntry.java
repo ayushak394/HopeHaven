@@ -9,6 +9,7 @@ import java.time.ZoneId;
 
 
 @Entity
+@Table(name="journal_entry")
 public class JournalEntry {
 
     @Id
@@ -17,10 +18,10 @@ public class JournalEntry {
 
     private String userId;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = true)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String content;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
 private String cipherText;   
 
 @Column(length = 64)
