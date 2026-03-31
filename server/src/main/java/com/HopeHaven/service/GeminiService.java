@@ -19,7 +19,9 @@ public class GeminiService {
 
     public String generateInsight(String prompt) throws Exception {
 
-        String safePrompt = prompt.replace("\"", "\\\"");
+        String safePrompt = prompt
+    .replace("\"", "\\\"")
+    .replace("\n", "\\n");
 
         String json = """
         {
@@ -35,7 +37,7 @@ public class GeminiService {
 
         HttpRequest request = HttpRequest.newBuilder()
                .uri(new URI(
-  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
 ))
 
 
@@ -45,6 +47,10 @@ public class GeminiService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();
+
+        System.out.println("API KEY: " + apiKey);
+System.out.println("Status Code: " + response.statusCode());
+System.out.println("Response Body: " + body);
 
         if (body.contains("\"error\"")) {
             System.out.println("Gemini Error: " + body);
