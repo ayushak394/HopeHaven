@@ -361,7 +361,6 @@ export default function DashboardPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDashboardData(response.data);
-      console.log("Dashboard data:", response.data);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     }

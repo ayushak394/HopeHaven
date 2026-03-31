@@ -1,7 +1,7 @@
 services:
   server-app:
     build: .
-    container_name: server-app
+    container_name: BackendServer
     restart: always
     ports:
       - "8080:8080"
@@ -10,3 +10,4 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       GEMINI_KEY: ${GEMINI_KEY}
+      FIREBASE_CONFIG_BASE64: ${FIREBASE_CONFIG_BASE64}

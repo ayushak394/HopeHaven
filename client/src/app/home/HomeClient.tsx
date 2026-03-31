@@ -50,31 +50,21 @@ export default function HomePage() {
       try {
         const token = await authUser.getIdToken();
 
-        // ⭐ Get profile from DB
-        const profileRes = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/home`,
+          { headers: { Authorization: `Bearer ${token}` } },
         );
 
-        const dbUser = profileRes.data;
+        const data = res.data;
 
-        // ⭐ ALSO fetch dashboard summary (YOU REMOVED THIS)
-        const dashboardRes = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/summary`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        const summary = dashboardRes.data;
-
-        // Store combined profile + stats
         setUserProfile({
           id: authUser.uid,
-          name: dbUser.name,
-          email: dbUser.email,
-          totalMoodEntries: summary.totalMoods,
-          streak: summary.streak,
-          totalJournalEntries: summary.totalJournals,
-          weeklyCompletion: summary.weeklyCompletion,
+          name: data.name,
+          email: data.email,
+          totalMoodEntries: data.totalMoods,
+          streak: data.streak,
+          totalJournalEntries: data.totalJournals,
+          weeklyCompletion: data.weeklyCompletion,
         });
       } catch (error) {
         console.error("Error fetching profile or summary:", error);
@@ -85,11 +75,6 @@ export default function HomePage() {
 
     return () => unsubscribe();
   }, [auth, router]);
-
-  const handleSignOut = async () => {
-    await signOut(auth);
-    router.push("/");
-  };
 
   if (loading) {
     return (
@@ -213,7 +198,8 @@ export default function HomePage() {
               </h1>
 
               <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300">
-                You&apos;re making great progress! Continue your mental wellness journey with our tools designed just for you.
+                You&apos;re making great progress! Continue your mental wellness
+                journey with our tools designed just for you.
               </p>
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
@@ -289,7 +275,8 @@ export default function HomePage() {
               Your Wellness Tools
             </h2>
             <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Explore all your mental health features. Find what resonates with you today.
+              Explore all your mental health features. Find what resonates with
+              you today.
             </p>
           </div>
 
@@ -370,7 +357,8 @@ export default function HomePage() {
                     Overwhelmed?
                   </h3>
                   <p className="text-lg text-slate-700 leading-relaxed mb-8">
-                    Guided breathing exercises help calm your mind and body when things feel like too much. Take a moment of peace right now.
+                    Guided breathing exercises help calm your mind and body when
+                    things feel like too much. Take a moment of peace right now.
                   </p>
 
                   <Button
@@ -388,9 +376,7 @@ export default function HomePage() {
                 <div className="relative flex-1 h-64 md:h-72 flex items-center justify-center">
                   <div className="absolute w-48 h-48 bg-gradient-to-br from-coral-400/30 to-pink-400/30 rounded-full animate-pulse-gentle" />
                   <div className="absolute w-40 h-40 bg-gradient-to-br from-pink-400/40 to-purple-400/40 rounded-full animate-float animation-delay-200" />
-                  <div className="relative text-6xl animate-float">
-                    🌊
-                  </div>
+                  <div className="relative text-6xl animate-float">🌊</div>
                 </div>
               </div>
             </CardContent>
@@ -415,7 +401,8 @@ export default function HomePage() {
                 You&apos;ve Got This
               </h3>
               <p className="text-lg sm:text-xl text-slate-700 leading-relaxed max-w-2xl mx-auto">
-                Remember, mental wellness is a journey, not a destination. Every small step counts. Be kind to yourself.
+                Remember, mental wellness is a journey, not a destination. Every
+                small step counts. Be kind to yourself.
               </p>
             </CardContent>
           </Card>

@@ -52,26 +52,22 @@ export default function HopeHavenLanding() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        console.log("✅ Signed in as:", user.email);
 
         const token = await user.getIdToken();
         localStorage.setItem("authToken", token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        // ✅ redirect to home after successful login
         router.push("/home");
 
         try {
           const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/secure-data`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(res.data);
         } catch (err) {
           console.error("Error calling backend:", err);
         }
       } else {
         setUser(null);
-        console.log("No user signed in");
       }
     });
 

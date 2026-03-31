@@ -64,7 +64,6 @@ export default function InsightsPage() {
         }
       }
 
-      console.log("DECRYPTED JOURNALS:", decryptedJournals)
 
       // 3) Call backend to generate insights (backend will fetch moods itself)
       const aiResp = await axios.post(
@@ -75,7 +74,6 @@ export default function InsightsPage() {
         { headers: { Authorization: `Bearer ${token}` } },
       )
 
-      console.log("AI RAW:", aiResp.data)
 
       // 4) Extract the text from Gemini-style JSON or accept raw text fallback
       let text = ""
@@ -89,7 +87,6 @@ export default function InsightsPage() {
         text = typeof aiResp.data === "string" ? aiResp.data : JSON.stringify(aiResp.data)
       }
 
-      console.log("FINAL INSIGHTS TEXT:", text)
 
       setInsights(text)
       setError(null)
