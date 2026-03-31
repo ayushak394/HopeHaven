@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.*;
 @Service
 public class GeminiService {
 
-    @Value("${gemini.api.key}")
+    @Value("${GEMINI_KEY}")
     private String apiKey;
 
     private final HttpClient client = HttpClient.newHttpClient();
