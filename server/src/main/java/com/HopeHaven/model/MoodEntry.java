@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "mood_entries")
@@ -23,7 +24,9 @@ public class MoodEntry {
     public MoodEntry(String userId, String mood, LocalDateTime timestamp) {
         this.userId = userId;
         this.mood = mood;
-        this.timestamp = Instant.now();
+        this.timestamp = timestamp
+        .atZone(ZoneId.systemDefault())
+        .toInstant();
 
     }
 

@@ -122,12 +122,12 @@ const getMoodDistribution = (moods: any[] = []) => {
       mood === "happy"
         ? "😊"
         : mood === "calm"
-        ? "😌"
-        : mood === "neutral"
-        ? "😐"
-        : mood === "sad"
-        ? "😢"
-        : "😰",
+          ? "😌"
+          : mood === "neutral"
+            ? "😐"
+            : mood === "sad"
+              ? "😢"
+              : "😰",
   }));
 };
 
@@ -138,17 +138,17 @@ const addCoverPage = (pdf: jsPDF, userName: string = "HopeHaven User") => {
   /* ======================
      Base background
   ====================== */
-  pdf.setFillColor(255, 251, 245); // warm off-white
+  pdf.setFillColor(255, 251, 245); 
   pdf.rect(0, 0, w, h, "F");
 
   /* ======================
      Soft decorative blobs
      (mimics website glow)
   ====================== */
-  pdf.setFillColor(255, 237, 213); // coral-100
+  pdf.setFillColor(255, 237, 213);
   pdf.circle(40, 40, 35, "F");
 
-  pdf.setFillColor(254, 215, 170); // orange-200
+  pdf.setFillColor(254, 215, 170); 
   pdf.circle(w - 30, 80, 45, "F");
 
   /* ======================
@@ -205,7 +205,7 @@ const addCoverPage = (pdf: jsPDF, userName: string = "HopeHaven User") => {
     `Generated on ${new Date().toLocaleDateString()}`,
     w / 2,
     cardY + 65,
-    { align: "center" }
+    { align: "center" },
   );
 
   /* ======================
@@ -217,7 +217,7 @@ const addCoverPage = (pdf: jsPDF, userName: string = "HopeHaven User") => {
     "Mental wellness is a journey — one step at a time.",
     w / 2,
     h - 30,
-    { align: "center" }
+    { align: "center" },
   );
 };
 
@@ -238,60 +238,6 @@ const addPageNumbers = (pdf: jsPDF) => {
   }
 };
 
-const downloadReport = async (userName: string) => {
-  await waitforchartload(2000);
-
-  const element = document.getElementById("dashboard-report");
-  if (!element) return;
-
-  const dataUrl = await toPng(element, {
-    cacheBust: true,
-    backgroundColor: "#ffffff",
-    pixelRatio: 2,
-  });
-
-  const pdf = new jsPDF("p", "mm", "a4");
-
-  // 1️⃣ Cover Page
-  addCoverPage(pdf, userName);
-
-  // 2️⃣ Dashboard Pages
-  pdf.addPage();
-
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  const marginX = 10;
-  const marginY = 12;
-
-  const usableWidth = pageWidth - marginX * 2;
-
-  const img = new Image();
-  img.src = dataUrl;
-  await new Promise((resolve) => (img.onload = resolve));
-
-  const imgHeight = (img.height * usableWidth) / img.width;
-
-  let y = 0;
-  let remainingHeight = imgHeight;
-
-  while (remainingHeight > 0) {
-    pdf.addImage(dataUrl, "PNG", marginX, y + marginY, usableWidth, imgHeight);
-
-    remainingHeight -= pageHeight - marginY * 2;
-
-    if (remainingHeight > 10) {
-      pdf.addPage();
-      y -= pageHeight - marginY * 2;
-    }
-  }
-
-  // 3️⃣ Page Numbers
-  addPageNumbers(pdf);
-
-  pdf.save("HopeHaven_Dashboard_Report.pdf");
-};
-
 const renderActivityLabel = ({
   cx,
   cy,
@@ -309,7 +255,7 @@ const renderActivityLabel = ({
     <text
       x={x}
       y={y}
-      fill="#374151" // slate-700
+      fill="#374151" 
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
       fontSize={12}
@@ -319,7 +265,7 @@ const renderActivityLabel = ({
       <tspan
         x={x}
         dy="1.2em"
-        fill="#6B7280" // slate-500
+        fill="#6B7280" 
         fontSize={11}
       >
         {Math.round(percent * 100)}%
@@ -331,10 +277,11 @@ const renderActivityLabel = ({
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const auth = getAuth(app);
   const router = useRouter();
 
@@ -357,14 +304,66 @@ export default function DashboardPage() {
   const fetchDashboardData = async (authUser: any) => {
     try {
       const token = await authUser.getIdToken();
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setDashboardData(response.data);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     }
   };
+
+  const downloadReport = async (userName: string) => {
+  const element = document.getElementById("dashboard-report");
+  if (!element) return;
+
+  try {
+    setIsDownloading(true);
+
+    window.scrollTo(0, 0);
+    await new Promise((r) => setTimeout(r, 800));
+
+    const dataUrl = await toPng(element, {
+      backgroundColor: "#ffffff",
+      pixelRatio: 2,
+    });
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    addCoverPage(pdf, userName);
+    pdf.addPage();
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const img = new Image();
+    img.src = dataUrl;
+    await new Promise((resolve) => (img.onload = resolve));
+
+    const imgWidth = img.width;
+    const imgHeight = img.height;
+
+    const ratio = Math.max(pageWidth / imgWidth, pageHeight / imgHeight);
+
+    const finalWidth = imgWidth * ratio;
+    const finalHeight = imgHeight * ratio;
+
+    const x = (pageWidth - finalWidth) / 2;
+    const y = (pageHeight - finalHeight) / 2;
+
+    pdf.addImage(dataUrl, "PNG", x, y, finalWidth, finalHeight);
+
+    addPageNumbers(pdf);
+
+    pdf.save("HopeHaven_Dashboard_Report.pdf");
+  } finally {
+    setIsDownloading(false);
+  }
+};
+
 
   if (loading) {
     return (
@@ -384,7 +383,7 @@ export default function DashboardPage() {
   const weeklyActivityData = dashboardData
     ? getWeeklyActivityData(
         dashboardData.moods || [],
-        dashboardData.journals || []
+        dashboardData.journals || [],
       )
     : [];
 
@@ -397,7 +396,7 @@ export default function DashboardPage() {
   const MOOD_COLORS = ["#FFB703", "#4ADE80", "#94A3B8", "#60A5FA", "#C084FC"];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background via-coral-50/20 to-blue-50/20 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-background via-coral-50/20 to-blue-50/20 relative">
       <div className="absolute top-20 left-10 w-72 h-72 bg-coral-500/10 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float animation-delay-200" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl animate-pulse-gentle" />
@@ -422,19 +421,19 @@ export default function DashboardPage() {
             onClick={() =>
               downloadReport(user?.displayName || "HopeHaven User")
             }
+            disabled={isDownloading}
             className="bg-linear-to-r from-coral-500 to-orange-500 hover:from-coral-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Download Your Report
+            {isDownloading ? "Downloading..." : "Download Your Report"}
           </Button>
         </div>
       </header>
 
       {/* Main Content */}
-
-      <section className="py-8 px-4 relative">
-        <div className="max-w-7xl mx-auto">
-          {/* Overview Section */}
-          <div id="dashboard-report">
+      <div id="dashboard-report" style={{ overflow: "visible" }}>
+        <section className="py-8 px-4 relative">
+          <div className="max-w-7xl mx-auto">
+            {/* Overview Section */}
             <div
               className={`transition-all duration-1000 ${
                 isVisible ? "animate-slide-up opacity-100" : "opacity-0"
@@ -455,7 +454,7 @@ export default function DashboardPage() {
                     <div className="flex items-baseline gap-2">
                       <span
                         className={`text-5xl font-bold ${getMoodColor(
-                          dashboardData?.averageMood || 0
+                          dashboardData?.averageMood || 0,
                         )}`}
                       >
                         {dashboardData?.averageMood?.toFixed(1) || "0"}
@@ -729,7 +728,7 @@ export default function DashboardPage() {
                         label={(props) => {
                           const { percent, payload } = props;
                           return `${payload.emoji} ${(percent! * 100).toFixed(
-                            0
+                            0,
                           )}%`;
                         }}
                         outerRadius={90}
@@ -870,57 +869,77 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-          </div>
 
-          {/* Achievements Section */}
-          <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden mb-8 group">
-            <div className="absolute inset-0 bg-linear-to-br from-yellow-500/5 via-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <CardHeader className="relative">
-              <CardTitle className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-yellow-400 to-coral-500 flex items-center justify-center">
-                  <Award className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl">Your Achievements</span>
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Celebrating your wellness milestones
-              </p>
-            </CardHeader>
-            <CardContent className="relative">
-              {dashboardData?.achievements &&
-              dashboardData.achievements.length > 0 ? (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {dashboardData.achievements.map((achievement, index) => (
-                    <div
-                      key={index}
-                      className="p-5 bg-linear-to-br from-yellow-100/80 via-coral-100/80 to-pink-100/80 rounded-2xl border-2 border-coral-200/50 flex items-center gap-4 animate-fade-in hover:scale-105 hover:shadow-lg transition-all duration-300 group/item"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <div className="text-3xl group-hover/item:scale-125 transition-transform duration-300">
-                        🏆
-                      </div>
-                      <p className="font-semibold text-foreground">
-                        {achievement}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  <div className="w-20 h-20 rounded-full bg-linear-to-br from-coral-100 to-yellow-100 flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-10 h-10 text-coral-500" />
+            {/* Achievements Section */}
+            <Card className="border-0 bg-white/70 backdrop-blur-lg shadow-xl hover:shadow-2xl transition-all duration-500 animate-fade-in animation-delay-300 overflow-hidden mb-8 group">
+              <div className="absolute inset-0 bg-linear-to-br from-yellow-500/5 via-coral-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <CardHeader className="relative">
+                <CardTitle className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-yellow-400 to-coral-500 flex items-center justify-center">
+                    <Award className="w-5 h-5 text-white" />
                   </div>
-                  <p className="font-medium text-lg">
-                    Keep tracking your mood and journaling to unlock
-                    achievements!
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+                  <span className="text-xl">Your Achievements</span>
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Celebrating your wellness milestones
+                </p>
+              </CardHeader>
+              <CardContent className="relative">
+                {dashboardData?.achievements &&
+                dashboardData.achievements.length > 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {dashboardData.achievements.map((achievement, index) => (
+                      <div
+                        key={index}
+                        className="p-5 bg-linear-to-br from-yellow-100/80 via-coral-100/80 to-pink-100/80 rounded-2xl border-2 border-coral-200/50 flex items-center gap-4 animate-fade-in hover:scale-105 hover:shadow-lg transition-all duration-300 group/item"
+                        style={{ animationDelay: `${index * 100}ms` }}
+                      >
+                        <div className="text-3xl group-hover/item:scale-125 transition-transform duration-300">
+                          🏆
+                        </div>
+                        <p className="font-semibold text-foreground">
+                          {achievement}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <div className="w-20 h-20 rounded-full bg-linear-to-br from-coral-100 to-yellow-100 flex items-center justify-center mx-auto mb-4">
+                      <Award className="w-10 h-10 text-coral-500" />
+                    </div>
+                    <p className="font-medium text-lg">
+                      Keep tracking your mood and journaling to unlock
+                      achievements!
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </div>
+      <footer className="py-12 px-4 sm:px-6 bg-white/60 backdrop-blur-xl border-t border-white/20 relative">
+  <div className="max-w-7xl mx-auto text-center">
+    <div className="flex items-center justify-center gap-2 mb-4">
+      <Heart className="w-5 h-5 text-coral-500" />
+      <p className="text-slate-700 font-medium">
+        © 2026 HopeHaven. Your mental wellness matters.
+      </p>
+    </div>
+    <p className="text-sm text-slate-600 max-w-2xl mx-auto">
+      If you're in crisis, please reach out to a mental health professional or{" "}
+      <a
+        href="https://findahelpline.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline hover:text-blue-800"
+      >
+        contact a crisis helpline
+      </a>
+    </p>
+  </div>
+</footer>
     </div>
   );
 }
-

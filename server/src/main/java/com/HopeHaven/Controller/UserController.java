@@ -2,6 +2,9 @@ package com.HopeHaven.controller;
 
 import com.HopeHaven.model.User;
 import com.HopeHaven.repository.UserRepository;
+import com.HopeHaven.repository.MoodRepository;
+import com.HopeHaven.repository.JournalRepository;
+import org.springframework.transaction.annotation.Transactional;
 import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.ServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,11 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+private MoodRepository moodRepository;
+
+@Autowired
+private JournalRepository journalRepository;
 
     @GetMapping("/profile")
     public User getProfile(ServletRequest request) {
@@ -56,4 +64,15 @@ public class UserController {
         public String getAvatarUrl() { return avatarUrl; }
         public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
     }
+
+    @DeleteMapping("/delete")
+@Transactional
+public void deleteUser(ServletRequest request) {
+    FirebaseToken firebaseUser = (FirebaseToken) request.getAttribute("firebaseUser");
+    String uid = firebaseUser.getUid();
+
+    journalRepository.deleteByUserId(uid);
+    moodRepository.deleteByUserId(uid);
+    userRepo.deleteById(uid);
+}
 }

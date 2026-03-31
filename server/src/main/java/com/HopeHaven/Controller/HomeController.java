@@ -51,14 +51,12 @@ public class HomeController {
         return map;
     }
 
-    // You can copy these methods from your existing controller
     private int calculateStreak(
         List<MoodEntry> moods,
         List<JournalEntry> journals
 ) {
     if (moods.isEmpty() && journals.isEmpty()) return 0;
 
-    // Collect all active dates (mood OR journal)
     Set<LocalDate> activeDates = new HashSet<>();
 
     moods.forEach(m ->
@@ -77,7 +75,6 @@ public class HomeController {
         )
     );
 
-    // Start from the most recent active day
     LocalDate today = LocalDate.now();
     LocalDate cursor = activeDates.contains(today)
             ? today

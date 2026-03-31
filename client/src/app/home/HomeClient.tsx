@@ -10,7 +10,6 @@ import {
   TrendingUp,
   BarChart3,
   Settings,
-  LogOut,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -96,7 +95,7 @@ export default function HomePage() {
     icon: any;
     title: string;
     description: string;
-    color: FeatureColor; // ⭐ FIXED
+    color: FeatureColor;
     href: string;
     delay: string;
   }[] = [
@@ -149,7 +148,6 @@ export default function HomePage() {
             onClick={() => router.push("/home")}
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-coral-500 to-pink-500 rounded-full blur-lg opacity-40" />
               <Heart className="w-8 h-8 text-coral-500 relative animate-pulse-gentle" />
             </div>
             <div>
@@ -163,11 +161,12 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
-              size="icon"
               onClick={() => router.push("/settings")}
-              className="rounded-full hover:bg-coral-100 transition-all duration-300 hover:scale-110"
+              className="flex items-center gap-3 rounded-full px-5 py-2 text-base font-semibold 
+           hover:bg-coral-100 transition-all duration-300 hover:scale-105"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-6 h-6" />
+              Settings
             </Button>
           </div>
         </div>
@@ -419,7 +418,16 @@ export default function HomePage() {
           </div>
           <p className="text-sm text-slate-600 max-w-2xl mx-auto">
             If you're in crisis, please reach out to a mental health
-            professional or contact a crisis helpline.
+            professional or{" "}
+            <a
+              href="https://findahelpline.com/"
+              target="_blank"
+              rel="HelpLine Finder"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              contact a crisis helpline
+            </a>
+            .
           </p>
         </div>
       </footer>

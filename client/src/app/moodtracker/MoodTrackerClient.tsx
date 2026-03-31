@@ -125,11 +125,11 @@ export default function MoodTrackerPage() {
       setTimeout(async () => {
         await fetchMoodEntries(user)
         setSubmitted(false)
-        setSubmitting(false) // ✅ FIX HERE
+        setSubmitting(false)
       }, 2000)
     } catch (error) {
       console.error("Error submitting mood:", error)
-      setSubmitting(false) // already correct here
+      setSubmitting(false)
     }
   }
 
@@ -167,12 +167,10 @@ export default function MoodTrackerPage() {
     const days = []
     const monthName = currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })
 
-    // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       days.push(<div key={`empty-${i}`} className="aspect-square" />)
     }
 
-    // Add cells for each day of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
       const moodsForDay = getMoodForDate(date)
@@ -545,6 +543,29 @@ export default function MoodTrackerPage() {
           <div className="max-w-7xl mx-auto">{renderCalendar()}</div>
         </div>
       </section>
+      <footer className="py-12 px-4 sm:px-6 bg-white/60 backdrop-blur-xl border-t border-white/20 relative">
+              <div className="max-w-7xl mx-auto text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Heart className="w-5 h-5 text-coral-500" />
+                  <p className="text-slate-700 font-medium">
+                    © 2026 HopeHaven. Your mental wellness matters.
+                  </p>
+                </div>
+                <p className="text-sm text-slate-600 max-w-2xl mx-auto">
+                  If you're in crisis, please reach out to a mental health
+                  professional or{" "}
+                  <a
+                    href="https://findahelpline.com/"
+                    target="_blank"
+                    rel="HelpLine Finder"
+                    className="text-blue-600 underline hover:text-blue-800"
+                  >
+                    contact a crisis helpline
+                  </a>
+                  .
+                </p>
+              </div>
+            </footer>
     </div>
   )
 }

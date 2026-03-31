@@ -1,7 +1,5 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/lib/theme-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "HopeHaven", // your app name
-    template: "%s | HopeHaven", // dynamic titles
-  }
+    default: "HopeHaven",
+    template: "%s | HopeHaven",
+  },
 };
 
 export default function RootLayout({
@@ -28,12 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-  <body
-    suppressHydrationWarning
-    className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-  >
-    <ThemeProvider>{children}</ThemeProvider>
-  </body>
-</html>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
   );
 }

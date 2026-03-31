@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type React from "react";
 
@@ -22,13 +22,14 @@ import {
   Lock,
   Mic,
   MicOff,
+  Heart,
 } from "lucide-react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
 import { app } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import {
-  getOrCreateUserKey,
+  getUserKey,
   encryptJSON,
   decryptJSON,
   imageToBase64,
@@ -162,7 +163,6 @@ export default function JournalPage() {
       }
     } catch (error) {
       console.error("Error checking journal lock status:", error);
-      // If error, assume no lock and proceed
       setIsLocked(false);
       setIsUnlocked(true);
       await fetchJournalEntries(authUser);
@@ -205,7 +205,7 @@ export default function JournalPage() {
   const fetchJournalEntries = async (authUser: any) => {
     try {
       const token = await authUser.getIdToken();
-      const key = await getOrCreateUserKey(authUser.uid);
+      const key = await getUserKey(authUser.uid);
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/journal/all-encrypted`,
@@ -244,9 +244,9 @@ export default function JournalPage() {
     setSubmitting(true);
     try {
       const token = await user.getIdToken();
-      const key = await getOrCreateUserKey(user.uid);
+      const key = await getUserKey(user.uid);
 
-      // Prepare data with text and images
+    
       const journalData = {
         text: entryContent,
         images: selectedImages,
@@ -337,7 +337,7 @@ export default function JournalPage() {
     setUpdatingId(entryId);
     try {
       const token = await user.getIdToken();
-      const key = await getOrCreateUserKey(user.uid);
+      const key = await getUserKey(user.uid);
 
       const journalData = {
         text: editContent,
@@ -369,9 +369,12 @@ export default function JournalPage() {
     setDeletingId(entryId);
     try {
       const token = await user.getIdToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/journal/${entryId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/journal/${entryId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       await fetchJournalEntries(user);
     } catch (error) {
@@ -1019,6 +1022,29 @@ export default function JournalPage() {
           </div>
         </div>
       </section>
+      <footer className="py-12 px-4 sm:px-6 bg-white/60 backdrop-blur-xl border-t border-white/20 relative">
+              <div className="max-w-7xl mx-auto text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Heart className="w-5 h-5 text-coral-500" />
+                  <p className="text-slate-700 font-medium">
+                    © 2026 HopeHaven. Your mental wellness matters.
+                  </p>
+                </div>
+                <p className="text-sm text-slate-600 max-w-2xl mx-auto">
+                  If you're in crisis, please reach out to a mental health
+                  professional or{" "}
+                  <a
+                    href="https://findahelpline.com/"
+                    target="_blank"
+                    rel="HelpLine Finder"
+                    className="text-blue-600 underline hover:text-blue-800"
+                  >
+                    contact a crisis helpline
+                  </a>
+                  .
+                </p>
+              </div>
+            </footer>
     </div>
   );
 }

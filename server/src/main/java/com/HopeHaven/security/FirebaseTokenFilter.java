@@ -31,7 +31,7 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 
     HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-    // ✅ Allow preflight requests
+    
     if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
         chain.doFilter(request, response);
         return;
@@ -39,7 +39,7 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 
     String path = httpRequest.getRequestURI();
 
-    // ✅ Allow public routes
+    
     if (path.equals("/") || path.startsWith("/api/public") || path.startsWith("/auth")) {
         chain.doFilter(request, response);
         return;
@@ -64,7 +64,7 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
             throw new ServletException("Invalid Firebase ID token", e);
         }
     } else {
-        // ✅ Proper response instead of crash
+        
         ((jakarta.servlet.http.HttpServletResponse) response)
                 .sendError(401, "Unauthorized");
         return;

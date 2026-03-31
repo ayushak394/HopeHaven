@@ -5,25 +5,26 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public interface MoodRepository extends JpaRepository<MoodEntry, Long> {
 
     List<MoodEntry> findByUserIdOrderByTimestampDesc(String userId);
 
+    void deleteByUserId(String userId);
+
     @Query("SELECT m FROM MoodEntry m WHERE m.userId = :userId AND m.timestamp >= :fromDate ORDER BY m.timestamp DESC")
     List<MoodEntry> findLast7Days(
-            @Param("userId") String userId,
-            @Param("fromDate") LocalDateTime fromDate
+        @Param("userId") String userId,
+        @Param("fromDate") Instant fromDate
     );
 
-@Query("""
-SELECT m.mood, m.timestamp
-FROM MoodEntry m
-WHERE m.userId = :userId
-ORDER BY m.timestamp ASC
-""")
-List<Object[]> findMoodTimeline(@Param("userId") String userId);
-  
+    @Query("""
+    SELECT m.mood, m.timestamp
+    FROM MoodEntry m
+    WHERE m.userId = :userId
+    ORDER BY m.timestamp ASC
+    """)
+    List<Object[]> findMoodTimeline(@Param("userId") String userId);
 }

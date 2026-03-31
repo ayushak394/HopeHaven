@@ -56,7 +56,6 @@ public class HomepageSummaryController {
 ) {
     if (moods.isEmpty() && journals.isEmpty()) return 0;
 
-    // Collect all active dates (mood OR journal)
     Set<LocalDate> activeDates = new HashSet<>();
 
     moods.forEach(m ->
@@ -75,7 +74,6 @@ public class HomepageSummaryController {
         )
     );
 
-    // Start from the most recent active day
     LocalDate today = LocalDate.now();
     LocalDate cursor = activeDates.contains(today)
             ? today

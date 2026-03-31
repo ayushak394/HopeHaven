@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/insights")
 public class InsightsController {
 
     @Autowired
     private InsightsService insightsService;
+
     @PostMapping("/generate")
     public ResponseEntity<?> generateInsights(
             @RequestBody GenerateInsightsRequest requestBody,
@@ -23,13 +26,15 @@ public class InsightsController {
             FirebaseToken user = (FirebaseToken) request.getAttribute("firebaseUser");
             String userId = user.getUid();
 
-            String insights = insightsService.generateFromClient(userId, requestBody);
+            Map<String, String> insights = insightsService.generateFromClient(userId, requestBody);
+            
+           
             return ResponseEntity.ok(insights);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500)
-                    .body("AI Insights failed: " + e.getMessage());
+                    .body(Map.of("error", "AI Insights failed: " + e.getMessage()));
         }
     }
 }

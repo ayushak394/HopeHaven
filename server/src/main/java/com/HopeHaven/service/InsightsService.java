@@ -6,11 +6,12 @@ import com.HopeHaven.repository.MoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class InsightsService {
@@ -21,19 +22,40 @@ public class InsightsService {
     @Autowired
     private GeminiService gemini;
 
-    public String generateFromClient(String userId, GenerateInsightsRequest req) throws Exception {
+    public Map<String, String> generateFromClient(String userId, GenerateInsightsRequest req) throws Exception {
 
-        LocalDateTime from = req.getFromDate() != null
-                ? LocalDateTime.parse(req.getFromDate(), DateTimeFormatter.ISO_DATE_TIME)
-                : LocalDateTime.now().minusDays(7);
+        Instant from;
+        try {
+            String raw = req.getFromDate();
+            if (raw != null) {
+                if (!raw.endsWith("Z")) raw = raw + "Z";
+                from = Instant.parse(raw);
+            } else {
+                from = Instant.now().minus(7, ChronoUnit.DAYS);
+            }
+        } catch (Exception e) {
+            from = Instant.now().minus(7, ChronoUnit.DAYS);
+        }
 
-        LocalDateTime to = req.getToDate() != null
-                ? LocalDateTime.parse(req.getToDate(), DateTimeFormatter.ISO_DATE_TIME)
-                : LocalDateTime.now();
+        Instant to;
+        try {
+            String raw = req.getToDate();
+            if (raw != null) {
+                if (!raw.endsWith("Z")) raw = raw + "Z";
+                to = Instant.parse(raw);
+            } else {
+                to = Instant.now();
+            }
+        } catch (Exception e) {
+            to = Instant.now();
+        }
 
         List<MoodEntry> moods = moodRepo.findLast7Days(userId, from);
-
         List<String> plaintextJournals = req.getJournals();
+
+        if (plaintextJournals == null || plaintextJournals.isEmpty()) {
+            return Map.of("summary", "Start journaling to unlock AI insights ✨");
+        }
 
         String prompt = buildPrompt(moods, plaintextJournals);
 
@@ -41,56 +63,53 @@ public class InsightsService {
     }
 
     private String buildPrompt(List<MoodEntry> moods, List<String> journals) {
+    String moodText = (moods == null || moods.isEmpty()) ? "No mood logs provided for this period." :
+            moods.stream().limit(14).map(m -> "Mood: " + m.getMood() + " | Date: " + 
+            m.getTimestamp().atZone(ZoneId.systemDefault()).toLocalDate())
+            .collect(Collectors.joining("\n", "", ""));
 
-String moodText;
-if (moods == null || moods.isEmpty()) {
-    moodText = "No mood logs available.";
-} else {
-    moodText = moods.stream()
-            .limit(10)
-            .map(m ->
-                    m.getMood() + " on " +
-                    m.getTimestamp()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-            )
-            .collect(Collectors.joining("\n- ", "- ", "\n"));
-}
-
-    String journalText;
-    if (journals == null || journals.isEmpty()) {
-        journalText = "No journal entries available.";
-    } else {
-        journalText = journals.stream()
-                .limit(3)
-                .map(j -> j.length() > 250 ? j.substring(0, 250) + "..." : j)
-                .reduce("", (a, b) -> a + "- " + b + "\n");
-    }
+    String journalText = (journals == null || journals.isEmpty()) ? "No journal entries provided." :
+            journals.stream().limit(5).map(j -> j.length() > 500 ? j.substring(0, 500) + "..." : j)
+            .collect(Collectors.joining("\n---\n", "Entries:\n", ""));
 
     return """
-    You are an emotional wellness assistant.
+    ROLE: 
+    You are the HopeHaven Intelligence, an expert compassionate emotional wellness coach specializing in Cognitive Behavioral Therapy (CBT) and Mindfulness. 
+    Your goal is to provide deep, non-judgmental insights based on a user's mood logs and journal entries.
 
-    Using the data below, generate concise, empathetic insights.
-    Avoid disclaimers like "insufficient data" unless absolutely necessary.
-    Do NOT repeat the raw data back to the user.
-
-    Respond in EXACTLY four sections, clearly labeled:
-
-    1. Emotional Summary (3–4 sentences max)
-    2. Patterns & Trends (bullet points, max 3)
-    3. Wellness Suggestions (bullet points, max 3)
-    4. One Short Motivational Message (1 sentence)
-
-    Keep the tone warm, supportive, and human.
-    Be insightful, not verbose.
-
-    Mood Logs:
+    DATA FOR ANALYSIS:
+    ---
+    MOOD HISTORY (Past few days):
     %s
 
-    Journal Excerpts:
+    JOURNAL ENTRIES:
     %s
-    """
-    .formatted(moodText, journalText);
+    ---
+
+    TASK:
+    Analyze the emotional vocabulary, recurring themes, and the relationship between events and mood.
+    
+    RESPONSE ARCHITECTURE (CRITICAL):
+    1. Respond in EXACTLY four sections.
+    2. Separate sections ONLY with the tag [SPLIT].
+    3. DO NOT use Markdown formatting (no #, no **, no *, no lists).
+    4. Use plain text only.
+
+    SECTION GUIDELINES:
+    Section 1: Emotional Summary
+    Provide a holistic view of their current state. Instead of just saying "you feel sad," identify the nuance (e.g., "pervasive fatigue," "guarded optimism," or "situational anxiety"). Acknowledge their resilience.
+
+    Section 2: Patterns and Trends
+    Identify one or two specific triggers or positive correlations. (Example: "You notice a significant mood lift on days you mention social connection" or "Negative self-talk appears most frequently in late-evening entries").
+
+    Section 3: Wellness Suggestions
+    Provide 2-3 actionable, small "Micro-steps." Do not give generic advice like "be happy." Suggest specific CBT techniques like 'Three Good Things' or 'Thought Reframing' based on their specific journal content.
+
+    Section 4: Motivational Message
+    A single, powerful, high-impact sentence that validates their journey. No clichés.
+
+    SAFETY GUARDRAIL:
+    If the user expresses immediate self-harm or crisis, prioritize a gentle suggestion to seek professional human support alongside your insight.
+    """.formatted(moodText, journalText);
 }
-
 }
